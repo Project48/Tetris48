@@ -1,6 +1,7 @@
 use "GameCommand";
+use "GameEngine";
 signature BOT = 
 sig
-	val getGameCommands : GameState -> GameCommand.gameCommand list
+	val getGameCommands : GameEngine.gamestate -> GameCommand.gameCommand list
 end
 
