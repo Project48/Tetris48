@@ -12,6 +12,7 @@ sig
 	val setElement	: matrix * int * int * int -> matrix
 	val nCols : matrix -> int
  	val nRows : matrix -> int
+ 	val createMatrix : unit -> int vector vector
 end
 
 structure Matrix :> MATRIX = 
@@ -53,6 +54,15 @@ struct
 	EXAMPLE: nRows(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 2
 	*)
 	fun nRows m = Vector.length m
+	
+	(* createMatrix (r, c, init)
+	TYPE: unit -> int vector vector
+	PRE:
+	POST: a matrix that have r rows and c columns
+	EXAMPLE: 
+	createMatrix (2, 3, 0) = fromList[fromList[0, 0, 0], fromList[0, 0, 0]]
+	*)
+	fun createMatrix (r, c, init) = Vector.tabulate(r, fn x => Vector.tabulate(c, fn x => init))
 end
 
 
