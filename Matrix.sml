@@ -1,5 +1,5 @@
 (*
-Tanken med Matrix är att det ska fungera ungefär som immutable Array2 för int. 
+Tanken med Matrix är att det ska fungera ungefär som immutable Array2. 
 *)
 (* 
 Raderna i och kolonnerna j räknas upp från 0.
