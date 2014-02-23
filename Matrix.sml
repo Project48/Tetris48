@@ -10,6 +10,8 @@ sig
 	type matrix
 	val getElement	: matrix * int * int -> int
 	val setElement	: matrix * int * int * int -> matrix
+	val nCols : matrix -> int
+ 	val nRows : matrix -> int
 end
 
 structure Matrix :> MATRIX = 
