@@ -55,8 +55,8 @@ struct
 	(*gamestate är immutable datatype som besriver det aktuella speltilståndet.
 		gamestate har instansen gs(spel_matrisen, (aktiv_tetromino_typ, aktiv_tetromino_position, aktiv_tetromino_facing),nästkommande_tetromino_typ)
 
-		spel_matrisen: dom fastta block spelplanen. När en den aktiva tetromino slutligen hamnar Lock Down plaseras den som block i spel_matrisen.
-			Om det är en 0 på en given ruta i matrisen betyder det att inget block ligger där, rutan är tom annars ligger ett fast block där
+		spel_matrisen: dom fasta block i spelplanen. När en den aktiva tetromino slutligen hamnar i Lock Down plaseras den som block i spel_matrisen.
+			Om det är en NONE på en given ruta i matrisen betyder det att inget block ligger där, rutan är tom annars ligger ett fast block där
 		
 		aktiv_tetromino_typ: vilken type den spelbar tetromino har
 
@@ -66,7 +66,7 @@ struct
 
 		nästkommande_tetromino_typ: vilken type den nästkommande tetromino kommer ha
 		*)
-	datatype gamestate = gs of matrix * (tetromino_type * position * orientation) * tetromino_type
+	datatype gamestate = gs of a' option matrix * (tetromino_type * position * orientation) * tetromino_type
 
 	(* doCommand (state , command)
 	TYPE: gamestate * gameCommand -> gamestate option
