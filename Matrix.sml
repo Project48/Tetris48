@@ -32,10 +32,25 @@ struct
 	POST: replaces the element in matrix m on the i:th row and the j:th column with v
 	EXAMPLE: 
 	setElement(#[#[0, 0, 1], #[0, 0, 0]], 0, 2, 3) = #[#[0, 0, 3], #[0, 0, 0]] !ELLER!
-	setElement(Vector.fromList[[0,0,1],Vector.fromList[0,0,0]], 0, 2, 3) = fromList[fromList[0, 0, 3], fromList[0, 0, 0]]
+	setElement(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 0, 2, 3) = fromList[fromList[0, 0, 3], fromList[0, 0, 0]]
 	*)
 	fun setElement (m, i, j, v) = Vector.update(m, i, Vector.update(Vector.sub(m, i), j, v))
 
+	(* nCols m
+	TYPE: matrix -> int
+	PRE:
+	POST: number of columns in matrix m
+	EXAMPLE: nCols(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 3
+	*)
+	fun nCols m = Vector.length(Vector.sub (m, 0))
+
+	(* nRows m
+	TYPE: matrix -> int
+	PRE: number of rows in matrix m
+	POST:
+	EXAMPLE: nRows(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 2
+	*)
+	fun nRows m = Vector.length m
 end
 
 
