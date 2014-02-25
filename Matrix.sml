@@ -7,20 +7,20 @@ Raderna i och kolonnerna j räknas upp från 0.
 
 signature MATRIX = 
 sig
-	type matrix
-	val getElement	: matrix * int * int -> 'a
-	val setElement	: matrix * int * int * 'a -> matrix
-	val nCols : matrix -> int
- 	val nRows : matrix -> int
- 	val createMatrix : int * int * 'a -> matrix
+	type 'a matrix
+	val getElement	: 'a matrix * int * int -> 'a
+	val setElement	: 'a matrix * int * int * 'a -> 'a matrix
+	val nCols : 'a matrix -> int
+ 	val nRows : 'a matrix -> int
+ 	val createMatrix : int * int * 'a -> 'a matrix
 end
 
 structure Matrix :> MATRIX = 
 struct
-	type matrix = 'a vector vector
+	type 'a matrix = 'a vector vector
 	
 	(* getElement (m, i, j)
-	TYPE: matrix * int * int -> 'a
+	TYPE: 'a matrix * int * int -> 'a
 	PRE:
 	POST: the element in matrix m on the i:th row and the j:th column
 	EXAMPLE: 
@@ -30,7 +30,7 @@ struct
 	fun getElement (m, i, j) = Vector.sub(Vector.sub(m, i), j)
 
 	(* setElement (m, i, j, v)
-	TYPE: matrix * int * int * 'a -> matrix
+	TYPE: 'a matrix * int * int * 'a -> 'a matrix
 	PRE:
 	POST: replaces the element in matrix m on the i:th row and the j:th column with v
 	EXAMPLE: 
@@ -40,7 +40,7 @@ struct
 	fun setElement (m, i, j, v) = Vector.update(m, i, Vector.update(Vector.sub(m, i), j, v))
 
 	(* nCols m
-	TYPE: matrix -> int
+	TYPE: 'a matrix -> int
 	PRE:
 	POST: number of columns in matrix m
 	EXAMPLE: nCols(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 3
@@ -48,7 +48,7 @@ struct
 	fun nCols m = Vector.length(Vector.sub (m, 0))
 
 	(* nRows m
-	TYPE: matrix -> int
+	TYPE: 'a matrix -> int
 	PRE: number of rows in matrix m
 	POST:
 	EXAMPLE: nRows(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 2
@@ -56,7 +56,7 @@ struct
 	fun nRows m = Vector.length m
 	
 	(* createMatrix (i, j, init)
-	TYPE: int * int * 'a -> matrix
+	TYPE: int * int * 'a -> 'a matrix
 	PRE:
 	POST: matrix that have i rows and j columns with init as all elements
 	EXAMPLE: createMatrix (2, 3, 0) = fromList[fromList[0, 0, 0], fromList[0, 0, 0]]
