@@ -47,6 +47,10 @@ struct
 		West: är 270 grader medsols eller 90 grader motsols från grund riktningen
 		  *)
 	datatype facing = North | East | South | West
+	
+	(*Denna datatyp inehåller iformation som används under rendering*)
+	datatype block = simpleblock;
+
 	(*position är en tuppel av typen int * int för att bestriva fria spelbara Tetromino:n position.
 	Den första elementet av tuppeln är vilken komumn i spel matrisen.
 	Den andra elementet av tuppeln är vilken rad i spel matrisen.
@@ -66,7 +70,7 @@ struct
 
 		nästkommande_tetromino_typ: vilken type den nästkommande tetromino kommer ha
 		*)
-	datatype gamestate = gs of a' option matrix * (tetromino_type * position * orientation) * tetromino_type
+	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type
 
 	(* doCommand (state , command)
 	TYPE: gamestate * gameCommand -> gamestate option
@@ -80,5 +84,19 @@ struct
 	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
 	fun gamestate_Validation (g :gamestate) = true/false
 	*)
+
+	(*Skapar en matris med blocken från en tetromino_type och facing*)
+	fun createBlocks Tetromino_T North 	= (~1,0)::(0,~1)::(1,0)       ::(0,0)::nil
+	|	createBlocks Tetromino_T East 	=         (0,~1)::(1,0)::(0,1)::(0,0)::nil
+	|	createBlocks Tetromino_T South 	= (~1,0)        ::(1,0)::(0,1)::(0,0)::nil
+	|	createBlocks Tetromino_T West 	= (~1,0)::(0,~1)       ::(0,1)::(0,0)::nil
+
+	|	createBlocks Tetromino_I North 	= (~1,0)::(0,0)::(1,0)::(2,0)::nil
+	|	createBlocks Tetromino_I East 	= (0,~1)::(0,0)::(0,1)::(0,2)::nil
+	|	createBlocks Tetromino_I South 	= (~1,0)::(0,0)::(1,0)::(2,0)::nil
+	|	createBlocks Tetromino_I West 	= (0,~1)::(0,0)::(0,1)::(0,2)::nil
+
+	|	createBlocks _ _ 				= [] (*TODO*) 
+	
 end
 
