@@ -13,6 +13,7 @@ sig
 	val nCols : 'a matrix -> int
  	val nRows : 'a matrix -> int
  	val createMatrix : int * int * 'a -> 'a matrix
+ 	val getRow : 'a matrix * int -> 'a vector
 end
 
 structure Matrix :> MATRIX = 
@@ -62,6 +63,14 @@ struct
 	EXAMPLE: createMatrix (2, 3, 0) = fromList[fromList[0, 0, 0], fromList[0, 0, 0]]
 	*)
 	fun createMatrix (i, j, init) = Vector.tabulate(i, fn x => Vector.tabulate(j, fn x => init))
+	
+	(* getRow (m, i)
+	TYPE: 'a matrix * int -> 'a vector
+	PRE:
+	POST: row i in matrix m
+	EXAMPLE: getRow(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 1) = fromList[0, 0, 0]
+	*)
+	fun getRow (m : 'a matrix, i) = Vector.sub(m, i)
 end
 
 
