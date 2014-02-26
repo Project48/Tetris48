@@ -86,17 +86,6 @@ struct
 
 	|	createBlocks _ _ 				= [] (*TODO*) 
 
-	(*Låser det aktuela blocket*)
-	fun lockDown (g as gs(m,(at,(x,y),af),nt)) = 
-		let 
-			val nymatris 	= ( List.foldr (fn ((dx,dy) , ma ) => setElement (ma, y+dy, x+dx, SOME(simpleblock))) m (createBlocks at af) ) 
-			val nypos 		= ((nCols m) div 2, ~1)
-			val nyaf 		= North
-			val nyat		= nt
-			val nynt		= at (*Byter bara plats på aktuela och nästa just nu*)
-		in 
-			gs(nymatris,(nyat,nypos,nyaf),nynt)
-		end
 
 	(* Förslag *
 	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
@@ -110,6 +99,26 @@ struct
 				List.find (fn (i,j) => j<0 orelse j >= nCols(m) orelse i< ~2 orelse i >= nRows(m) orelse if i<0 then false else isSome(getElement(m,i,j)) ) blocks
 				))
 		end
+
+	(*Låser det aktuela blocket*)
+	(*lockDown state
+	TYPE: gamestate => gamestate option
+		*)
+	fun lockDown (g as gs(m,(at,(x,y),af),nt)) = 
+		if not (gamestate_Validation g) then 
+			NONE
+		else
+		let 
+			val nymatris 	= ( List.foldr (fn ((dx,dy) , ma ) => setElement (ma, y+dy, x+dx, SOME(simpleblock))) m (createBlocks at af) ) 
+			val nypos 		= ((nCols m) div 2, ~1)
+			val nyaf 		= North
+			val nyat		= nt
+			val nynt		= at (*Byter bara plats på aktuela och nästa just nu*)
+		in 
+			SOME ( gs(nymatris,(nyat,nypos,nyaf),nynt))
+		end
+
+	
 
 	(*Map riktning + 90grader*)
 	fun rcw North = East
@@ -134,7 +143,7 @@ struct
 	|	doCommand (g as gs(m,(at,(x,y),af),nt), SoftDrop) 	= if gamestate_Validation g 
 																then	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt) )
 																	 		then SOME ( gs(m,(at,(x,y+1),af),nt) )
-																	 		else SOME (lockDown (g)) 
+																	 		else lockDown (g) 
 																	 			
 																else	NONE
 	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rcw af)),nt) )
