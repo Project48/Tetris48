@@ -71,23 +71,6 @@ struct
 		nästkommande_tetromino_typ: vilken type den nästkommande tetromino kommer ha
 		*)
 	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type
-
-	(* doCommand (state , command)
-	TYPE: gamestate * gameCommand -> gamestate option
-	PRE: TODO
-	POST: give the next state after command is performed if the command is allowed on state else NONE
-	EXEMPLE: TODO
-		*)
-	fun doCommand (g as gs(m,(at,(x,y),af),nt), LeftShift) 	= SOME( gs(m,(at,(x-1,y),af),nt) )
-	|	doCommand (g as gs(m,(at,(x,y),af),nt), RightShift) = SOME( gs(m,(at,(x+1,y),af),nt) )
-	|	doCommand (g as gs(m,(at,(x,y),af),nt), SoftDrop) 	= SOME( gs(m,(at,(x,y+1),af),nt) )
-	|	doCommand (g :gamestate, c :gameCommand) = NONE (*TODO*)
-
-	(* Förslag *
-	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
-	*)
-	fun gamestate_Validation (gs(m,(at,ap,af),nt)) = true
-	
 	
 
 	(*Skapar en matris med blocken från en tetromino_type och facing*)
@@ -104,9 +87,9 @@ struct
 	|	createBlocks _ _ 				= [] (*TODO*) 
 
 	(*Låser det aktuela blocket*)
-	fun lockDown (gs(m,(at,(x,y),af),nt)) = 
+	fun lockDown (g as gs(m,(at,(x,y),af),nt)) = 
 		let 
-			val nymatris 	= ( List.foldr (fn ((dx,dy) , ma ) => setElement (ma, x+dx,y+dy, SOME(simpleblock))) m (createBlocks at af) ) 
+			val nymatris 	= ( List.foldr (fn ((dx,dy) , ma ) => setElement (ma, y+dy, x+dx, SOME(simpleblock))) m (createBlocks at af) ) 
 			val nypos 		= ((nCols m) div 2, ~1)
 			val nyaf 		= North
 			val nyat		= nt
@@ -114,6 +97,49 @@ struct
 		in 
 			gs(nymatris,(nyat,nypos,nyaf),nynt)
 		end
+
+	(* Förslag *
+	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
+	POST: true om g är tillåtet annars false
+	*)
+	fun gamestate_Validation (g as gs(m,(at,(x,y),af),nt) ) = 
+		let
+			val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
+		in
+			not (isSome (
+				List.find (fn (i,j) => j<0 orelse j >= nCols(m) orelse i< ~2 orelse i >= nRows(m) orelse if i<0 then false else isSome(getElement(m,i,j)) ) blocks
+				))
+		end
+
+	(*Map riktning + 90grader*)
+	fun rcw North = East
+	  | rcw East = South
+	  | rcw South = West
+	  | rcw West  = North   
+	(*Map riktning - 90grader*)
+	fun rccw East = North
+	  | rccw South = East
+	  | rccw West = South
+	  | rccw North = West      
+
+
+	(* doCommand (state , command)
+	TYPE: gamestate * gameCommand -> gamestate option
+	PRE: TODO
+	POST: give the next state after command is performed if the command is allowed on state else NONE
+	EXEMPLE: TODO
+		*)
+	fun doCommand (g as gs(m,(at,(x,y),af),nt), LeftShift) 	= Option.filter gamestate_Validation ( gs(m,(at,(x-1,y),af),nt) )
+	|	doCommand (g as gs(m,(at,(x,y),af),nt), RightShift) = Option.filter gamestate_Validation ( gs(m,(at,(x+1,y),af),nt) )
+	|	doCommand (g as gs(m,(at,(x,y),af),nt), SoftDrop) 	= if gamestate_Validation g 
+																then	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt) )
+																	 		then SOME ( gs(m,(at,(x,y+1),af),nt) )
+																	 		else SOME (lockDown (g)) 
+																	 			
+																else	NONE
+	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rcw af)),nt) )
+	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rccw af)),nt) )
+	|	doCommand (g :gamestate, c :gameCommand) = NONE (*TODO*)
 
 end
 
