@@ -1,6 +1,8 @@
 (* ANVAND INTE I RIKTIG KOD*)
 use "Matrix.sml";
 use "GameEngine";
+use "Miscellaneous";
+open Miscellaneous;
 
 structure Experiment =
 struct
@@ -26,13 +28,46 @@ fun printMatrix m =
     end
 
 open GameEngine;
-fun printgs (gs(m,(at,(x,y),af),nt)) = 
+
+fun printGS' (gs(m,(at,(x,y),af),nt), i, j) = 
+	let
+		val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
+
+	in
+		case (List.find (fn (bi,bj) => bi=i andalso bj=j) blocks)  of
+		 	SOME(_) => if isSome 	(getElement (m, i, j)) 	then "~~" 	else "{}"
+		 	| NONE  => if isSome	(getElement (m, i, j)) 	then "[]" 	else "  "  
+	end
+
+fun printGS (state as gs(m,(at,(x,y),af),nt)) = 
 	let
 		val cols = nCols(m)
 		val rows = nRows(m)
-		fun printrad i = Vector.appi (fn (j, elem) => tetrisPrint(elem)) (getRow (m, i) )
+		fun printrad i = (
+			print ("rad:");
+			printInt i;
+			print "\t";
+			print "|"; 
+			Vector.appi 
+			    (fn (j, elem) => (print
+						  ( printGS' 
+							(state, i,j)
+						  )
+					     )
+			    )
+			    (getRow (m, i));
+			println("|")
+			)
 	in
-		List.tabulate (n,  printrad)
+		(
+		  List.tabulate (rows,  printrad);
+		  println "--------+";
+		  print "NEXT: " ;
+		  print ((fn Tetromino_T => "T" | Tetromino_I => "I" | Tetromino_O => "O" | Tetromino_S => "S" | Tetromino_Z => "Z"| Tetromino_L => "L" | Tetromino_J => "J"  ) nt );
+		  println " |";
+		  println "--------+"
+		)
 	end
+
 
 end
