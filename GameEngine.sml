@@ -118,7 +118,14 @@ struct
 			SOME ( gs(nymatris,(nyat,nypos,nyaf),nynt))
 		end
 
-	
+	(*harddrop' state
+	TYPE: gamestate -> gamestate option
+	PRE: state måste vara validerad
+	POST: state efter en harddrop opration
+	*) 
+	fun hardDrop (g as gs(m,(at,(x,y),af),nt)) =  
+	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt)) then hardDrop (gs(m,(at,(x,y+1),af),nt)) else lockDown(g)
+
 
 	(*Map riktning + 90grader*)
 	fun rcw North = East
@@ -143,12 +150,12 @@ struct
 	|	doCommand (g as gs(m,(at,(x,y),af),nt), SoftDrop) 	= if gamestate_Validation g 
 																then	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt) )
 																	 		then SOME ( gs(m,(at,(x,y+1),af),nt) )
-																	 		else lockDown (g) 
-																	 			
+																	 		else lockDown (g) 	
 																else	NONE
 	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rcw af)),nt) )
 	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rccw af)),nt) )
-	|	doCommand (g :gamestate, c :gameCommand) = NONE (*TODO*)
+	|	doCommand (g, HardDrop) = hardDrop g
+	|	doCommand (g :gamestate, c :gameCommand) = NONE (*unknown command*)
 
 end
 
