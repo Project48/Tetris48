@@ -78,12 +78,17 @@ struct
 	POST: give the next state after command is performed if the command is allowed on state else NONE
 	EXEMPLE: TODO
 		*)
-	fun doCommand (g :gamestate, c :gameCommand) = NONE (*TODO*)
+	fun doCommand (g as gs(m,(at,(x,y),af),nt), LeftShift) 	= SOME( gs(m,(at,(x-1,y),af),nt) )
+	|	doCommand (g as gs(m,(at,(x,y),af),nt), RightShift) = SOME( gs(m,(at,(x+1,y),af),nt) )
+	|	doCommand (g as gs(m,(at,(x,y),af),nt), SoftDrop) 	= SOME( gs(m,(at,(x,y+1),af),nt) )
+	|	doCommand (g :gamestate, c :gameCommand) = NONE (*TODO*)
 
 	(* Förslag *
 	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
-	fun gamestate_Validation (g :gamestate) = true/false
 	*)
+	fun gamestate_Validation (gs(m,(at,ap,af),nt)) = true
+	
+	
 
 	(*Skapar en matris med blocken från en tetromino_type och facing*)
 	fun createBlocks Tetromino_T North 	= (~1,0)::(0,~1)::(1,0)       ::(0,0)::nil
@@ -97,6 +102,18 @@ struct
 	|	createBlocks Tetromino_I West 	= (0,~1)::(0,0)::(0,1)::(0,2)::nil
 
 	|	createBlocks _ _ 				= [] (*TODO*) 
-	
+
+	(*Låser det aktuela blocket*)
+	fun lockDown (gs(m,(at,(x,y),af),nt)) = 
+		let 
+			val nymatris 	= ( List.foldr (fn ((dx,dy) , ma ) => setElement (ma, x+dx,y+dy, SOME(simpleblock))) m (createBlocks at af) ) 
+			val nypos 		= ((nCols m) div 2, ~1)
+			val nyaf 		= North
+			val nyat		= nt
+			val nynt		= at (*Byter bara plats på aktuela och nästa just nu*)
+		in 
+			gs(nymatris,(nyat,nypos,nyaf),nynt)
+		end
+
 end
 
