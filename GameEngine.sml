@@ -84,7 +84,32 @@ struct
 	|	createBlocks Tetromino_I South 	= (~1,0)::(0,0)::(1,0)::(2,0)::nil
 	|	createBlocks Tetromino_I West 	= (0,~1)::(0,0)::(0,1)::(0,2)::nil
 
-	|	createBlocks _ _ 				= [] (*TODO*) 
+		|	createBlocks Tetromino_J North   = (~1,~1)::(~1,0)::(0,0)::(1,0)::nil
+	| 	createBlocks Tetromino_J East    = (1,~1)::(0,~1)::(0,0)::(0,1)::nil
+	|       createBlocks Tetromino_J South   = (~1,0)::(0,0)::(1,0)::(1,1)::nil
+	| 	createBlocks Tetromino_J West    = (0,~1)::(0,0)::(0,1)::(~1,1)::nil
+
+	|	createBlocks Tetromino_L North   = (~1,0)::(0,0)::(1,0)::(1,~1)::nil
+	|	createBlocks Tetromino_L East    = (0,~1)::(0,0)::(0,1)::(1,1)::nil
+	|	createBlocks Tetromino_L South   = (~1,1)::(~1,0)::(0,0)::(1,0)::nil
+	|	createBlocks Tetromino_L West	 = (~1,1)::(0,~1)::(0,0)::(0,1)::nil
+
+	|	createBlocks Tetromino_S North 	 = (1,~1)::(0,~1)::(0,0)::(~1,0)::nil
+	| 	createBlocks Tetromino_S East 	 = (0,~1)::(0,0)::(1,0)::(1,~1)::nil
+	|	createBlocks Tetromino_S South	 = (1,0)::(0,0)::(0,1)::(~1,1)::nil
+	|	createBlocks Tetromino_S West	 = (~1,~1)::(~1,0)::(0,0)::(0,1)::nil
+
+	|	createBlocks Tetromino_Z North	 = (~1,~1)::(0,~1)::(0,0)::(1,0)::nil
+	|	createBlocks Tetromino_Z East	 = (1,~1)::(1,0)::(0,0)::(0,1)::nil
+	|	createBlocks Tetromino_Z South	 = (~1,0)::(0,0)::(0,1)::(1,1)::nil
+	|	createBlocks Tetromino_Z West	 = (0,~1)::(0,0)::(~1,0)::(~1,1)::nil
+
+	|	createBlocks Tetromino_O North	 = (0,~1)::(0,0)::(1,~1)::(1,0)::nil
+	|	createBlocks Tetromino_O East	 = (0,~1)::(0,0)::(1,~1)::(1,0)::nil
+	|	createBlocks Tetromino_O South	 = (0,~1)::(0,0)::(1,~1)::(1,0)::nil
+	|	createBlocks Tetromino_O West	 = (0,~1)::(0,0)::(1,~1)::(1,0)::nil
+
+
 
 
 	(* Förslag *
