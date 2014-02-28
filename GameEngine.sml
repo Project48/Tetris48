@@ -201,6 +201,6 @@ struct
 	val len = Vector.length vec
 	in
 	fun delete' (m, i, l) = if len > 0 andalso checkRow(m, i) then delete'(m, (i+1), (getRow(m, i)):: l) else delete'(m, (i+1), l)
-
+	end
 end
 
