@@ -181,6 +181,22 @@ struct
 	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rccw af)),nt) )
 	|	doCommand (g, HardDrop) = hardDrop g
 	|	doCommand (g :gamestate, c :gameCommand) = NONE (*unknown command*)
+	
+	(* checkRow (m, i)
+	TYPE: 'a option matrix * int -> bool
+	PRE:
+	POST: true if row i in matrix m is full else false
+	EXAMPLE: checkRow(Vector.fromList[Vector.fromList[SOME(1),SOME(1),SOME(1)],Vector.fromList[NONE,NONE,NONE]], 0) = true
+	*)
+	fun checkRow (m, i) = Vector.all  (fn NONE => false | SOME(_) => true) (getRow(m, i))
+	
+	(* deleteRow (m, i)
+	TYPE: 'a option matrix * int -> 'a option matrix
+	PRE:
+	POST: if row i contains is full then delete that row add an empty row at the end
+	EXAMPLE: deleteRow(Vector.fromList[Vector.fromList[SOME(1),SOME(1),SOME(1)],Vector.fromList[NONE,NONE,NONE]], 0)
+	*)
+	fun deleteRow (m, i) = (* code here *)
 
 end
 
