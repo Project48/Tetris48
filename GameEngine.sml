@@ -125,12 +125,21 @@ struct
 				))
 		end
 
+	fun lockDown_Validation (g as gs(m,(at,(x,y),af),nt) ) = 
+		let
+			val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
+		in
+			not (isSome (
+				List.find (fn (i,j) => j<0 orelse j >= nCols(m) orelse i< 0 orelse i >= nRows(m) orelse if i<0 then false else isSome(getElement(m,i,j)) ) blocks
+				))
+		end
+
 	(*Låser det aktuela blocket*)
 	(*lockDown state
 	TYPE: gamestate => gamestate option
 		*)
 	fun lockDown (g as gs(m,(at,(x,y),af),nt)) = 
-		if not (gamestate_Validation g) then 
+		if not (lockDown_Validation g) then 
 			NONE
 		else
 		let 
