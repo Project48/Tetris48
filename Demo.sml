@@ -4,17 +4,22 @@
 	use "Bot";
 	use "GameEngine";	
 *)
-use "Bot";
+(*use "Bot";*)
+
 
 (*Demo.sml*)
 structure Demo = 
 struct
 	val comandDelay = 0.5
-	val unableDelay = 1.0
+	val unableDelay = 1
 
 	open GameEngine
 	open Matrix
 	open Experiment
+
+	fun newGame (r,c) = gs((createMatrix (r,c, NONE : block option)),
+	 ( Tetromino_T, ((c-1) div 2,0) : position ,  North),  
+	Tetromino_I )
 
 	(*random*)
 	fun nextRand (a,b) = (b,((a+1*b+1)mod (101)))
@@ -33,5 +38,6 @@ struct
 	else if isSome(doCommand (g, com)) then (printGS g; delay comandDelay; loop (valOf (doCommand (g, com))) (a,b) coms)
 		 else (println "unable to do command!"; delay (unableDelay*0.25); println "fake gravity applied..."; delay (unableDelay*0.75);  loop g (a,b) (SoftDrop::nil) )
 
+	fun startDemo () = loop (newGame(20,10)) (153,156) [];
 
 end
