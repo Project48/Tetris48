@@ -195,8 +195,12 @@ struct
 	PRE:
 	POST: if row i contains is full then delete that row add an empty row at the end
 	EXAMPLE: deleteRow(Vector.fromList[Vector.fromList[SOME(1),SOME(1),SOME(1)],Vector.fromList[NONE,NONE,NONE]], 0)
-	*)
-	fun deleteRow (m, i) = (* code here *)
+	*) (*EJ FÄRDIG*)
+	fun deleteRow (m, i) = 
+	let
+	val len = Vector.length vec
+	in
+	fun delete' (m, i, l) = if len > 0 andalso checkRow(m, i) then delete'(m, (i+1), (getRow(m, i)):: l) else delete'(m, (i+1), l)
 
 end
 
