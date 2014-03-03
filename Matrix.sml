@@ -14,6 +14,7 @@ sig
  	val nRows : 'a matrix -> int
  	val createMatrix : int * int * 'a -> 'a matrix
  	val getRow : 'a matrix * int -> 'a vector
+	val setRow : 'a matrix * int * 'a vector -> 'a matrix
 end
 
 structure Matrix :> MATRIX = 

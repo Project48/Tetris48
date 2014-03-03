@@ -57,7 +57,7 @@ struct
 	*)
 	type position = int * int
 	(*gamestate är immutable datatype som besriver det aktuella speltilståndet.
-		gamestate har instansen gs(spel_matrisen, (aktiv_tetromino_typ, aktiv_tetromino_position, aktiv_tetromino_facing),nästkommande_tetromino_typ)
+		gamestate har instansen gs(spel_matrisen, (aktiv_tetromino_typ, aktiv_tetromino_position, aktiv_tetromino_facing),nästkommande_tetromino_typ, clearRows)
 
 		spel_matrisen: dom fasta block i spelplanen. När en den aktiva tetromino slutligen hamnar i Lock Down plaseras den som block i spel_matrisen.
 			Om det är en NONE på en given ruta i matrisen betyder det att inget block ligger där, rutan är tom annars ligger ett fast block där
@@ -69,8 +69,10 @@ struct
 		aktiv_tetromino_facing: vilken riktning den spelbar tetromino har
 
 		nästkommande_tetromino_typ: vilken type den nästkommande tetromino kommer ha
+
+
 		*)
-	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type
+	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type * int
 	
 
 	(*Skapar en matris med blocken från en tetromino_type och facing*)
@@ -166,7 +168,7 @@ struct
 	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
 	POST: true om g är tillåtet annars false
 	*)
-	fun gamestate_Validation (g as gs(m,(at,(x,y),af),nt) ) = 
+	fun gamestate_Validation (g as gs(m,(at,(x,y),af),nt,clrRows) ) = 
 		let
 			val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
 		in
@@ -175,7 +177,7 @@ struct
 				))
 		end
 
-	fun lockDown_Validation (g as gs(m,(at,(x,y),af),nt) ) = 
+	fun lockDown_Validation (g as gs(m,(at,(x,y),af),nt,clrRows) ) = 
 		let
 			val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
 		in
@@ -188,7 +190,7 @@ struct
 	(*lockDown state
 	TYPE: gamestate => gamestate option
 		*)
-	fun lockDown (g as gs(m,(at,(x,y),af),nt)) = 
+	fun lockDown (g as gs(m,(at,(x,y),af),nt,clrRows)) = 
 		if not (lockDown_Validation g) then 
 			NONE
 		else
@@ -201,7 +203,7 @@ struct
 			val nymatris	= deleteRow nymatris
 			val row 		= () (*List.foldr (fun (a, b) =>  ) m (List.filter (fn i => checkRow (m,i)) (List.tabulate (nRows(m), (fn i => i))))*)
 		in 
-			SOME ( gs(nymatris,(nyat,nypos,nyaf),nynt))
+			SOME ( gs(nymatris,(nyat,nypos,nyaf),nynt,clrRows))
 		end
 
 	(*harddrop' state
@@ -209,8 +211,8 @@ struct
 	PRE: state måste vara validerad
 	POST: state efter en harddrop opration
 	*) 
-	fun hardDrop (g as gs(m,(at,(x,y),af),nt)) =  
-	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt)) then hardDrop (gs(m,(at,(x,y+1),af),nt)) else lockDown(g)
+	fun hardDrop (g as gs(m,(at,(x,y),af),nt,clrRows)) =  
+	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt,clrRows)) then hardDrop (gs(m,(at,(x,y+1),af),nt,clrRows)) else lockDown(g)
 
 
 	(*Map riktning + 90grader*)
@@ -231,15 +233,15 @@ struct
 	POST: give the next state after command is performed if the command is allowed on state else NONE
 	EXEMPLE: TODO
 		*)
-	fun doCommand (g as gs(m,(at,(x,y),af),nt), LeftShift) 	= Option.filter gamestate_Validation ( gs(m,(at,(x-1,y),af),nt) )
-	|	doCommand (g as gs(m,(at,(x,y),af),nt), RightShift) = Option.filter gamestate_Validation ( gs(m,(at,(x+1,y),af),nt) )
-	|	doCommand (g as gs(m,(at,(x,y),af),nt), SoftDrop) 	= if gamestate_Validation g 
-																then	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt) )
-																	 		then SOME ( gs(m,(at,(x,y+1),af),nt) )
+	fun doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), LeftShift) 	= Option.filter gamestate_Validation ( gs(m,(at,(x-1,y),af),nt,clrRows) )
+	|	doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), RightShift) = Option.filter gamestate_Validation ( gs(m,(at,(x+1,y),af),nt,clrRows) )
+	|	doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), SoftDrop) 	= if gamestate_Validation g 
+																then	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt,clrRows) )
+																	 		then SOME ( gs(m,(at,(x,y+1),af),nt,clrRows) )
 																	 		else lockDown (g) 	
 																else	NONE
-	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rcw af)),nt) )
-	|	doCommand (g as gs(m,(at,ap,af),nt), RotateCCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rccw af)),nt) )
+	|	doCommand (g as gs(m,(at,ap,af),nt,clrRows), RotateCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rcw af)),nt,clrRows) )
+	|	doCommand (g as gs(m,(at,ap,af),nt,clrRows), RotateCCW) = Option.filter gamestate_Validation ( gs(m,(at,ap, (rccw af)),nt,clrRows) )
 	|	doCommand (g, HardDrop) = hardDrop g
 	|	doCommand (g :gamestate, c :gameCommand) = NONE (*unknown command*)
 	
