@@ -199,8 +199,7 @@ struct
 			val nypos 		= ((nCols m) div 2, ~1)
 			val nyaf 		= North
 			val nyat		= nt
-			val nynt		= at (*Byter bara plats på aktuela och nästa just nu*)
-			(* skräp? val row 		= List.foldr (fun (a, b) =>  ) m (List.filter (fn i => checkRow (m,i)) (List.tabulate (nRows(m), (fn i => i))))*)
+			val nynt		= List.nth ([Tetromino_Z,Tetromino_O,Tetromino_S,Tetromino_L,Tetromino_J,Tetromino_I,Tetromino_T], (RunCall.unsafeCast(Time.now()) - (RunCall.unsafeCast(g) div 2)) mod 7)
 		in 
 			SOME (deleteRow( gs(nymatris,(nyat,nypos,nyaf),nynt,clrRows)))
 		end

@@ -24,7 +24,9 @@ struct
 	(*random*)
 	fun nextRand (a,b) = (b,((a+1*b+1)mod (101)))
 	val tetrominos = Vector.fromList [Tetromino_T,Tetromino_I,Tetromino_O,Tetromino_S,Tetromino_Z,Tetromino_L,Tetromino_J]
-	fun setNextType (gs(m,(at,(x,y),af),nt,c), nynexttype) = gs(m,(at,(x,y),af),nynexttype,c)
+	(*fun setNextType (gs(m,(at,(x,y),af),nt,c), nynexttype) = gs(m,(at,(x,y),af),nynexttype,c)*)
+	fun setNextType (g, _) = g
+
 
 	structure DemoBot = FakeBot
 
