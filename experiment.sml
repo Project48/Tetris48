@@ -29,7 +29,7 @@ fun printMatrix m =
 
 open GameEngine;
 
-fun printGS' (gs(m,(at,(x,y),af),nt), i, j) = 
+fun printGS' (gs(m,(at,(x,y),af),nt,cr), i, j) = 
 	let
 		val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
 
@@ -39,7 +39,7 @@ fun printGS' (gs(m,(at,(x,y),af),nt), i, j) =
 		 	| NONE  => if isSome	(getElement (m, i, j)) 	then "[]" 	else "  "  
 	end
 
-fun printGS (state as gs(m,(at,(x,y),af),nt)) = 
+fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) = 
 	let
 		val cols = nCols(m)
 		val rows = nRows(m)
@@ -64,7 +64,9 @@ fun printGS (state as gs(m,(at,(x,y),af),nt)) =
 		  println "--------+";
 		  print "NEXT: " ;
 		  print ((fn Tetromino_T => "T" | Tetromino_I => "I" | Tetromino_O => "O" | Tetromino_S => "S" | Tetromino_Z => "Z"| Tetromino_L => "L" | Tetromino_J => "J"  ) nt );
-		  println " |";
+		  print " |score:\t";
+		  printInt cr;
+		  println "";
 		  println "--------+"
 		)
 	end
