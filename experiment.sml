@@ -64,7 +64,9 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 		  println "--------+";
 		  print "NEXT: " ;
 		  print ((fn Tetromino_T => "T" | Tetromino_I => "I" | Tetromino_O => "O" | Tetromino_S => "S" | Tetromino_Z => "Z"| Tetromino_L => "L" | Tetromino_J => "J"  ) nt );
-		  println " |";
+		  print " |score:\t";
+		  printInt cr;
+		  println "";
 		  println "--------+"
 		)
 	end

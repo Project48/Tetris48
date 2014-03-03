@@ -129,7 +129,7 @@ struct
         EXAMPLE:
         *)
 	fun moveRows (m , 0) = m
-	| 	moveRows (m , i) = moveRows(setRow(m, i, getRow(m,i-1)) ,i-1)
+	| 	moveRows (m , i) = moveRows( setRow(m, i, getRow(m,i-1)) ,i-1)
 
 
 
@@ -142,26 +142,26 @@ struct
         (*
         VARIANT: i
         *)
-	fun deleteRow' (m, i) =
+	fun deleteRow' (g as gs(m,(at,ap,af),nt,clrRows) , i) =
 	let 
 	    val newRow = Vector.tabulate (nCols m, fn x => NONE)
 	    val rows = nRows m
 	in
 	    if i < rows andalso checkRow(m, i) then 
-		(deleteRow'(m, i+1) ; Matrix.setRow(moveRows (m, i), 0, newRow))
+		(deleteRow'(g, i+1) ; gs(( Matrix.setRow(moveRows (m, i), 0, newRow)),(at,ap,af),nt,clrRows+1)) 
 	    else if i < rows then 
-		deleteRow'(m, i+1)
+		deleteRow'(g, i+1)
 	    else
-		m
+		g
 	end
 
-        (* deleteRow m
+        (* deleteRow g
         TYPE: 'a option matrix -> 'a option matrix
         PRE:
         POST:
         EXAMPLE:
         *)
-	fun deleteRow m = deleteRow' (m, 0)
+	fun deleteRow g = deleteRow' (g, 0)
 
 
 	(* Förslag *
@@ -200,10 +200,9 @@ struct
 			val nyaf 		= North
 			val nyat		= nt
 			val nynt		= at (*Byter bara plats på aktuela och nästa just nu*)
-			val nymatris	= deleteRow nymatris
-			val row 		= () (*List.foldr (fun (a, b) =>  ) m (List.filter (fn i => checkRow (m,i)) (List.tabulate (nRows(m), (fn i => i))))*)
+			(* skräp? val row 		= List.foldr (fun (a, b) =>  ) m (List.filter (fn i => checkRow (m,i)) (List.tabulate (nRows(m), (fn i => i))))*)
 		in 
-			SOME ( gs(nymatris,(nyat,nypos,nyaf),nynt,clrRows))
+			SOME (deleteRow( gs(nymatris,(nyat,nypos,nyaf),nynt,clrRows)))
 		end
 
 	(*harddrop' state
