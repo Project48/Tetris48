@@ -14,6 +14,7 @@ sig
  	val nRows : 'a matrix -> int
  	val createMatrix : int * int * 'a -> 'a matrix
  	val getRow : 'a matrix * int -> 'a vector
+	val setRow : 'a matrix * int * 'a vector -> 'a matrix
 end
 
 structure Matrix :> MATRIX = 
@@ -71,6 +72,9 @@ struct
 	EXAMPLE: getRow(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 1) = fromList[0, 0, 0]
 	*)
 	fun getRow (m : 'a matrix, i) = Vector.sub(m, i)
+
+
+	fun setRow (m : 'a matrix, i, v) = Vector.update(m,i,v)
 end
 
 

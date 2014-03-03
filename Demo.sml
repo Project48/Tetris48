@@ -11,7 +11,7 @@
 structure Demo = 
 struct
 	val comandDelay = 0.5
-	val unableDelay = 1
+	val unableDelay = 1.0
 
 	open GameEngine
 	open Matrix
@@ -19,14 +19,14 @@ struct
 
 	fun newGame (r,c) = gs((createMatrix (r,c, NONE : block option)),
 	 ( Tetromino_T, ((c-1) div 2,0) : position ,  North),  
-	Tetromino_I )
+	Tetromino_I, 0 )
 
 	(*random*)
 	fun nextRand (a,b) = (b,((a+1*b+1)mod (101)))
 	val tetrominos = Vector.fromList [Tetromino_T,Tetromino_I,Tetromino_O,Tetromino_S,Tetromino_Z,Tetromino_L,Tetromino_J]
-	fun setNextType (gs(m,(at,(x,y),af),nt), nynexttype) = gs(m,(at,(x,y),af),nynexttype)
+	fun setNextType (gs(m,(at,(x,y),af),nt,c), nynexttype) = gs(m,(at,(x,y),af),nynexttype,c)
 
-	structure DemoBot = SmartBot
+	structure DemoBot = FakeBot
 
 	fun loop g (a,b) [] = (printGS g ;loop g (a,b) (DemoBot.getGameCommands(g)))
 	|	loop (g) (a,b) (com::coms) = 
