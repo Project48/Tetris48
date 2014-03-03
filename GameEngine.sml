@@ -110,6 +110,56 @@ struct
 	|	createBlocks Tetromino_O West	 = (0,~1)::(0,0)::(1,~1)::(1,0)::nil
 
 
+	(* checkRow (m, i)
+	TYPE: 'a option matrix * int -> bool
+	PRE:
+	POST: true if row i in matrix m is full else false
+	EXAMPLE: checkRow(Vector.fromList[Vector.fromList[SOME(1),SOME(1),SOME(1)],Vector.fromList[NONE,NONE,NONE]], 0) = true
+	*)
+	fun checkRow (m, i) = Vector.all  (fn NONE => false | SOME(_) => true) (getRow(m, i))
+
+(*-------------Ej Ej fungerande--------------*)
+
+	     (* moveRow (m, i)
+        TYPE: 'a option matrix * int -> 'a option matrix
+        PRE:
+        POST:
+        EXAMPLE:
+        *)
+	fun moveRows (m , 0) = m
+	| 	moveRows (m , i) = moveRows(setRow(m, i, getRow(m,i-1)) ,i-1)
+
+
+
+        (* deleteRow' (m, i)
+        TYPE: 'a option matrix * int -> 'a option matrix
+        PRE: 
+        POST: if a row in 'a option matrix m is "full" then m without that row, but with an "empty" row at the top instead
+        EXAMPLE: deleteRow'(Vector.fromList[Vector.fromList[NONE, SOME(1)], Vector.fromList[SOME(1), SOME(1)]], 0) = fromList[fromList[NONE, NONE], [NONE, SOME(1)]
+        *)
+        (*
+        VARIANT: i
+        *)
+	fun deleteRow' (m, i) =
+	let 
+	    val newRow = Vector.tabulate (nCols m, fn x => NONE)
+	    val rows = nRows m
+	in
+	    if i < rows andalso checkRow(m, i) then 
+		(deleteRow'(m, i+1) ; Matrix.setRow(moveRows (m, i), 0, newRow))
+	    else if i < rows then 
+		deleteRow'(m, i+1)
+	    else
+		m
+	end
+
+        (* deleteRow m
+        TYPE: 'a option matrix -> 'a option matrix
+        PRE:
+        POST:
+        EXAMPLE:
+        *)
+	fun deleteRow m = deleteRow' (m, 0)
 
 
 	(* Förslag *
@@ -148,6 +198,8 @@ struct
 			val nyaf 		= North
 			val nyat		= nt
 			val nynt		= at (*Byter bara plats på aktuela och nästa just nu*)
+			val nymatris	= deleteRow nymatris
+			val row 		= () (*List.foldr (fun (a, b) =>  ) m (List.filter (fn i => checkRow (m,i)) (List.tabulate (nRows(m), (fn i => i))))*)
 		in 
 			SOME ( gs(nymatris,(nyat,nypos,nyaf),nynt))
 		end
@@ -191,55 +243,9 @@ struct
 	|	doCommand (g, HardDrop) = hardDrop g
 	|	doCommand (g :gamestate, c :gameCommand) = NONE (*unknown command*)
 	
-	(* checkRow (m, i)
-	TYPE: 'a option matrix * int -> bool
-	PRE:
-	POST: true if row i in matrix m is full else false
-	EXAMPLE: checkRow(Vector.fromList[Vector.fromList[SOME(1),SOME(1),SOME(1)],Vector.fromList[NONE,NONE,NONE]], 0) = true
-	*)
-	fun checkRow (m, i) = Vector.all  (fn NONE => false | SOME(_) => true) (getRow(m, i))
-
-(*-------------Ej Ej fungerande--------------*)
-
-        (* deleteRow' (m, i)
-        TYPE: 'a option matrix * int -> 'a option matrix
-        PRE: 
-        POST: if a row in 'a option matrix m is "full" then m without that row, but with an "empty" row at the top instead
-        EXAMPLE: deleteRow'(Vector.fromList[Vector.fromList[NONE, SOME(1)], Vector.fromList[SOME(1), SOME(1)]], 0) = fromList[fromList[NONE, NONE], [NONE, SOME(1)]
-        *)
-        (*
-        VARIANT: i
-        *)
-	fun deleteRow' (m, i) =
-	let 
-	    val newRow = Vector.tabulate (nCols m, fn x => NONE)
-	    val rows = nRows m
-	in
-	    if i < rows andalso checkRow(m, i) then 
-		(deleteRow'(m, i+1) ; Vector.update(moveRows (m, i), 0, newRow))
-	    else if i < rows then 
-		deleteRow'(m, i+1)
-	    else
-		m
-	end
-
-        (* deleteRow m
-        TYPE: 'a option matrix -> 'a option matrix
-        PRE:
-        POST:
-        EXAMPLE:
-        *)
-	fun deleteRow m = deleteRow' (m, 0)
+	
 
 
-        (* moveRow (m, i)
-        TYPE: 'a option matrix * int -> 'a option matrix
-        PRE:
-        POST:
-        EXAMPLE:
-        *)
-	fun moveRows (m , 0) = m
-	| 	moveRows (m , i) = moveRows(setRow(m, i, getRow(m,i-1)) ,i-1)
 
 end
 

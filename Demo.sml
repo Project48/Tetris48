@@ -11,7 +11,7 @@
 structure Demo = 
 struct
 	val comandDelay = 0.5
-	val unableDelay = 1
+	val unableDelay = 1.0
 
 	open GameEngine
 	open Matrix
@@ -26,7 +26,7 @@ struct
 	val tetrominos = Vector.fromList [Tetromino_T,Tetromino_I,Tetromino_O,Tetromino_S,Tetromino_Z,Tetromino_L,Tetromino_J]
 	fun setNextType (gs(m,(at,(x,y),af),nt), nynexttype) = gs(m,(at,(x,y),af),nynexttype)
 
-	structure DemoBot = SmartBot
+	structure DemoBot = FakeBot
 
 	fun loop g (a,b) [] = (printGS g ;loop g (a,b) (DemoBot.getGameCommands(g)))
 	|	loop (g) (a,b) (com::coms) = 
