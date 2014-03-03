@@ -148,7 +148,7 @@ struct
 	    val rows = nRows m
 	in
 	    if i < rows andalso checkRow(m, i) then 
-		(deleteRow'(g, i+1) ; gs(( Matrix.setRow(moveRows (m, i), 0, newRow)),(at,ap,af),nt,clrRows+1)) 
+		(deleteRow'(g, i+1) ; deleteRow'(gs(( Matrix.setRow(moveRows (m, i), 0, newRow)),(at,ap,af),nt,clrRows+1),0)) 
 	    else if i < rows then 
 		deleteRow'(g, i+1)
 	    else
