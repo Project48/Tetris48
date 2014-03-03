@@ -73,7 +73,7 @@ struct
 	fun getRow (m : 'a matrix, i) = Vector.sub(m, i)
 
 
-	fun setRow (m : 'a matrix, i, v) = Vector.update(m,i)
+	fun setRow (m : 'a matrix, i, v) = Vector.update(m,i,v)
 end
 
 

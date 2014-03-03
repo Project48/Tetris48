@@ -199,7 +199,7 @@ struct
 	*)
 	fun checkRow (m, i) = Vector.all  (fn NONE => false | SOME(_) => true) (getRow(m, i))
 
--------------Ej fungerande--------------
+(*-------------Ej Ej fungerande--------------*)
 
         (* deleteRow' (m, i)
         TYPE: 'a option matrix * int -> 'a option matrix
@@ -238,8 +238,11 @@ struct
         POST:
         EXAMPLE:
         *)
-	fun moveRows (m : 'a option vector vector, i) = if i > 0 then 
-		Vector.map (fn x => Vector.update (m, i, (getRow(m, (i-1)))) m) else 
-			m
+	fun moveRows (m , 0) = m
+	| 	moveRows (m , i) = moveRows(setRow(m, i, getRow(m,i-1)) ,i-1)
+
 end
 
+(*= if i > 0 then 
+		Vector.map (fn x => Vector.update (m, i, (getRow(m, (i-1)))) m) else 
+			m*)
