@@ -71,6 +71,9 @@ struct
 	EXAMPLE: getRow(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 1) = fromList[0, 0, 0]
 	*)
 	fun getRow (m : 'a matrix, i) = Vector.sub(m, i)
+
+
+	fun setRow (m : 'a matrix, i, v) = Vector.update(m,i)
 end
 
 
