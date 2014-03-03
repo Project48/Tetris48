@@ -148,7 +148,7 @@ struct
 	    val rows = nRows m
 	in
 	    if i < rows andalso checkRow(m, i) then 
-		(deleteRow'(g, i+1) ; gs(( Matrix.setRow(moveRows (m, i), 0, newRow)),(at,ap,af),nt,clrRows+1)) 
+		(deleteRow'(g, i+1) ; deleteRow'(gs(( Matrix.setRow(moveRows (m, i), 0, newRow)),(at,ap,af),nt,clrRows+1),0)) 
 	    else if i < rows then 
 		deleteRow'(g, i+1)
 	    else
@@ -199,8 +199,7 @@ struct
 			val nypos 		= ((nCols m) div 2, ~1)
 			val nyaf 		= North
 			val nyat		= nt
-			val nynt		= at (*Byter bara plats på aktuela och nästa just nu*)
-			(* skräp? val row 		= List.foldr (fun (a, b) =>  ) m (List.filter (fn i => checkRow (m,i)) (List.tabulate (nRows(m), (fn i => i))))*)
+			val nynt		= List.nth ([Tetromino_Z,Tetromino_O,Tetromino_S,Tetromino_L,Tetromino_J,Tetromino_I,Tetromino_T], (RunCall.unsafeCast(Time.now()) - (RunCall.unsafeCast(g) div 2)) mod 7)
 		in 
 			SOME (deleteRow( gs(nymatris,(nyat,nypos,nyaf),nynt,clrRows)))
 		end

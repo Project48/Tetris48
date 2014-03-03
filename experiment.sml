@@ -27,8 +27,9 @@ fun printMatrix m =
 	printMatrix'(m, 0, 0)
     end
 
-open GameEngine;
 
+(*
+open GameEngine;
 fun printGS' (gs(m,(at,(x,y),af),nt,cr), i, j) = 
 	let
 		val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
@@ -70,6 +71,6 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 		  println "--------+"
 		)
 	end
-
+*)
 
 end
