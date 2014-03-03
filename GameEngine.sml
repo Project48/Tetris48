@@ -120,7 +120,6 @@ struct
 	*)
 	fun checkRow (m, i) = Vector.all  (fn NONE => false | SOME(_) => true) (getRow(m, i))
 
-(*-------------Ej Ej fungerande--------------*)
 
 	     (* moveRow (m, i)
         TYPE: 'a option matrix * int -> 'a option matrix
