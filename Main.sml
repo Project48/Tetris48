@@ -2,13 +2,13 @@
 
 
 use "Matrix";
-use "experiment";
+use "GameEngine";
+use "Miscellaneous";
 use "Bot";
-use "GameEngine";	
+	
 use "Demo";
 
-open GameEngine
-open Matrix
-open Experiment;
-
-fun start () = Demo.startDemo();
+fun start () = Demo.newGame (20,10);
+(* autostart
+start();
+*)
