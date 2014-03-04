@@ -10,7 +10,7 @@
 (*Demo.sml*)
 structure Demo = 
 struct
-	val comandDelay = 0.5
+	val comandDelay = 0.0
 	val unableDelay = 1.0
 	structure DemoBot = FooBot
 
@@ -66,7 +66,7 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 		let
 			val _ = printGS g 
 			val coms = DemoBot.getGameCommands(g)
-			val _ = if coms <> nil then () else (println "not command!"; delay (unableDelay*0.25); println "fake gravity applied..."; delay (unableDelay*0.75);  loop g (SoftDrop::nil)) 
+			val coms = if coms <> nil then coms else (println "not command!"; delay (unableDelay*0.25); println "fake gravity applied..."; delay (unableDelay*0.75);  [SoftDrop]) 
 		in
 			loop g coms
 		end
@@ -76,7 +76,7 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 	 	SOME(x) => (printGS x; delay comandDelay; loop (x) coms)
 	 	| NONE => 
 	 		if (com = HardDrop orelse com = SoftDrop) 
-	 		then (printGS g; println "GameOver") 
+	 		then (printGS g; println "GameOver"; g) 
 	 		else (
 	 			println "unable to do command!";
 	 			 delay (unableDelay*0.25);
