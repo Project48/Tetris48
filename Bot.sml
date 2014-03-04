@@ -173,7 +173,7 @@ fun newGameB (r,c) = gs((createMatrix (r,c, NONE : block option)),
 	 ( Tetromino_T, ((c-1) div 2,0) : position ,  North),  
 	Tetromino_I , 0)
 
-fun x g = Experiment.printGS g
+
 
 fun h g = valOf (hardDrop g)
 
