@@ -12,24 +12,25 @@ structure Demo =
 struct
 	val comandDelay = 0.5
 	val unableDelay = 1.0
-	structure DemoBot = FakeBot
+	structure DemoBot = FooBot
 
 	open GameEngine
 	open Matrix
 	open Miscellaneous
 
-	fun printGS' (gs(m,(at,(x,y),af),nt,cr), i, j) = 
-	let
-		val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
-
-	in
-		case (List.find (fn (bi,bj) => bi=i andalso bj=j) blocks)  of
-		 	SOME(_) => if isSome 	(getElement (m, i, j)) 	then "><" 	else "{}"
-		 	| NONE  => if isSome	(getElement (m, i, j)) 	then "[]" 	else "  "  
-	end
+	
 
 fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) = 
 	let
+		fun printGS' (gs(m,(at,(x,y),af),nt,cr), i, j) = 
+			let
+				val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
+			in
+				case (List.find (fn (bi,bj) => bi=i andalso bj=j) blocks)  of
+				 	SOME(_) => if isSome 	(getElement (m, i, j)) 	then "><" 	else "{}"
+				 	| NONE  => if isSome	(getElement (m, i, j)) 	then "[]" 	else "  "  
+			end
+
 		val cols = nCols(m)
 		val rows = nRows(m)
 		fun printrad i = (
