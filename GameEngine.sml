@@ -1,6 +1,6 @@
 use "Matrix";
 
-(*En Spelmotorn för tetris. *)
+(*En Spelmotor för tetris. *)
 structure GameEngine = 
 struct
     open Matrix
@@ -15,7 +15,18 @@ struct
 	RotateCCW:	Roterar tetromino:n 90 grader motsols
 	*Med tetromino:n syftas det på den tetromino:n som inte Lock Down, dvs den spelaren frortfarande kan flytta/rotera på.
 	*)
+	
+	(* REPRESENTATION CONVENTION: commands used to move tetrominos: 
+   	   LeftShift: moves the tetromino one step left. 
+   	   RightShift: moves the tetromino one step right. 
+	   HardDrop: drops the tetromino the surface it lands on´and locks, making it impossible to move. 
+	   SoftDrop: moves the tetromino one step down. 
+	   RotateCW: rotates the tetromino 90 degrees clockwise. 
+	   RotateCCW: rotates the tetromino 90 degrees counterclockwise.
+	   REPRESENTATION INVARIANT: (none)
+ 	*)
 	datatype gameCommand = LeftShift | RightShift | HardDrop | SoftDrop | RotateCW | RotateCCW
+	
 	(*Datatype används som idenifierar för dom 7 olika typerna en ensidiga tetromino:na kan ha.
 	Dom ensidiga tetromino:na får roteras men inte reflekteras. Nedan vissas endast en riknig av vare ensidiga tetromino.
 	tetromino_O: 
@@ -39,16 +50,51 @@ struct
 	  []
 	[][][]
 		*)
+	(* REPRESENTATION CONVENTION: different types of the following onesided tetrominos:
+	   Tetromino_O: 
+	   [][]
+	   [][]
+	   Tetromino_I:
+	   [][][][]
+	   Tetromino_S:
+	     [][]
+	   [][]
+	   Tetromino_Z:
+	   [][]
+	     [][]
+	   Tetromino_L:
+	       []
+	   [][][]
+   	   Tetromino_J:
+	   []
+	   [][][]
+	   Tetromino_T:
+	     []
+	   [][][]
+   	   REPRESENTATION INVARIANT: (none)
+   	*)
 	datatype tetromino_type = Tetromino_O | Tetromino_I | Tetromino_S | Tetromino_Z | Tetromino_L | Tetromino_J | Tetromino_T
+	
 	(*Denna datatype är tänkt att basriva dom fyra riktningar ensidig Tetromino kan ha.
 		North: grund/start riktningen av en Tetromino 
 		East: är 90 grader medsols eller 270 grader motsols från grund riktningen
 		South: är 180 grader medsols eller 180 grader motsols från grund riktningen
 		West: är 270 grader medsols eller 90 grader motsols från grund riktningen
 		  *)
+	
+	(* REPRESENTATION CONVENTION: directions that a onesided tetromino can have:
+	   North: the initial direction
+	   East: 90 degrees clockwise or 270 degrees counterclockwise from North. 
+	   South: 180 degrees clockwise or 180 degrees counterclockwise from North. 
+      	   West: 270 degrees clockwise or 90 degrees counterclockwise from North.
+	   REPRESENTATION INVARIANT: (none)
+	*)
 	datatype facing = North | East | South | West
 	
 	(*Denna datatyp inehåller iformation som används under rendering*)
+	(* REPRESENTATION CONVENTION: one of four blocks of a tetromino
+   	   REPRESENTATION INVARIANT: is of type Option
+ 	*)
 	datatype block = simpleblock;
 
 	(*position är en tuppel av typen int * int för att bestriva fria spelbara Tetromino:n position.
@@ -69,14 +115,22 @@ struct
 		aktiv_tetromino_facing: vilken riktning den spelbar tetromino har
 
 		nästkommande_tetromino_typ: vilken type den nästkommande tetromino kommer ha
-
-
 		*)
+		
+	(* REPRESENTATION CONVENTION: a gamestate with game matrix m, active tetromino type at, active tetromino position (x,y), active tetromino facing af, next tetromino type nt and clearRows clrRows is represented by (gs(m,(at,(x,y),af),nt,clrRows))
+   	   REPRESENTATION INVARIANT: all blocks in m are locked. If a block in m is NONE then the place is empty, otherwise a block is locked there 
+ 	*)
 	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type * int
 	
 
 	(*Skapar en matris med blocken från en tetromino_type och facing*)
-	fun createBlocks Tetromino_T North 	= (~1,0)::(0,~1)::(1,0)       ::(0,0)::nil
+	(* createBlocks tt fac
+	TYPE: tetromino_type -> facing -> (int * int) list
+	PRE: TODO
+	POST: a list of coordinates for tetromino type tt in the direction fac
+	EXAMPLE: createBlocks Tetromino_T North = [(~1, 0), (0, ~1), (1, 0), (0, 0)]
+	*)
+	fun 	createBlocks Tetromino_T North 	= (~1,0)::(0,~1)::(1,0)       ::(0,0)::nil
 	|	createBlocks Tetromino_T East 	=         (0,~1)::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T South 	= (~1,0)        ::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T West 	= (~1,0)::(0,~1)       ::(0,1)::(0,0)::nil
@@ -86,7 +140,7 @@ struct
 	|	createBlocks Tetromino_I South 	= (~1,0)::(0,0)::(1,0)::(2,0)::nil
 	|	createBlocks Tetromino_I West 	= (0,~1)::(0,0)::(0,1)::(0,2)::nil
 
-		|	createBlocks Tetromino_J North   = (~1,~1)::(~1,0)::(0,0)::(1,0)::nil
+	|	createBlocks Tetromino_J North   = (~1,~1)::(~1,0)::(0,0)::(1,0)::nil
 	| 	createBlocks Tetromino_J East    = (1,~1)::(0,~1)::(0,0)::(0,1)::nil
 	|       createBlocks Tetromino_J South   = (~1,0)::(0,0)::(1,0)::(1,1)::nil
 	| 	createBlocks Tetromino_J West    = (0,~1)::(0,0)::(0,1)::(~1,1)::nil
@@ -114,18 +168,21 @@ struct
 
 	(* checkRow (m, i)
 	TYPE: 'a option matrix * int -> bool
-	PRE:
+	PRE: none
 	POST: true if row i in matrix m is full else false
 	EXAMPLE: checkRow(Vector.fromList[Vector.fromList[SOME(1),SOME(1),SOME(1)],Vector.fromList[NONE,NONE,NONE]], 0) = true
 	*)
 	fun checkRow (m, i) = Vector.all  (fn NONE => false | SOME(_) => true) (getRow(m, i))
 
 
-	     (* moveRow (m, i)
-        TYPE: 'a option matrix * int -> 'a option matrix
-        PRE:
-        POST:
-        EXAMPLE:
+	(* moveRows (m, i)
+        TYPE: 'a matrix * int -> 'a matrix
+        PRE: 0 <= i <= |m|
+        POST: TODO
+        EXAMPLE: moveRows(Vector.fromList[Vector.fromList[SOME(1),SOME(1),SOME(1)],Vector.fromList[NONE,NONE,NONE]], 1) = fromList[fromList[SOME 1, SOME 1, SOME 1], fromList[SOME 1, SOME 1, SOME 1]
+        *)
+        (*
+        VARIANT: i
         *)
 	fun moveRows (m , 0) = m
 	| 	moveRows (m , i) = moveRows( setRow(m, i, getRow(m,i-1)) ,i-1)
@@ -133,10 +190,10 @@ struct
 
 
         (* deleteRow' (m, i)
-        TYPE: 'a option matrix * int -> 'a option matrix
-        PRE: 
-        POST: if a row in 'a option matrix m is "full" then m without that row, but with an "empty" row at the top instead
-        EXAMPLE: deleteRow'(Vector.fromList[Vector.fromList[NONE, SOME(1)], Vector.fromList[SOME(1), SOME(1)]], 0) = fromList[fromList[NONE, NONE], [NONE, SOME(1)]
+        TYPE: gamestate * int -> gamestate
+        PRE: 0 <= i <= |m|
+        POST: if row i in matrix m is "full" then m without that row, but with an "empty" row at the top instead else m
+        EXAMPLE: TODO
         *)
         (*
         VARIANT: i
@@ -155,18 +212,23 @@ struct
 	end
 
         (* deleteRow g
-        TYPE: 'a option matrix -> 'a option matrix
-        PRE:
-        POST:
-        EXAMPLE:
+        TYPE: gamestate -> gamestate
+        PRE: TODO
+        POST: if row i in matrix m is "full" then m without that row, but with an "empty" row at the top instead else m
+        EXAMPLE: TODO
         *)
 	fun deleteRow g = deleteRow' (g, 0)
 
 
-	(* Förslag *
+	(*
 	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
-	POST: true om g är tillåtet annars false
 	*)
+	(* gamestate_Validation g
+        TYPE: gamestate -> bool
+        PRE: TODO
+        POST: true if g is allowed else false
+        EXAMPLE: TODO
+        *)
 	fun gamestate_Validation (g as gs(m,(at,(x,y),af),nt,clrRows) ) = 
 		let
 			val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
@@ -187,8 +249,11 @@ struct
 
 	(*Låser det aktuela blocket*)
 	(*lockDown state
-	TYPE: gamestate => gamestate option
-		*)
+	TYPE: gamestate -> gamestate option
+	PRE: TODO
+        POST: TODO
+        EXAMPLE: TODO
+        *)
 	fun lockDown (g as gs(m,(at,(x,y),af),nt,clrRows)) = 
 		if not (lockDown_Validation g) then 
 			NONE
@@ -203,21 +268,35 @@ struct
 			SOME (deleteRow( gs(nymatris,(nyat,nypos,nyaf),nynt,clrRows)))
 		end
 
-	(*harddrop' state
+	(* hardDrop state
 	TYPE: gamestate -> gamestate option
 	PRE: state måste vara validerad
 	POST: state efter en harddrop opration
+	EXAMPLE: TODO
 	*) 
 	fun hardDrop (g as gs(m,(at,(x,y),af),nt,clrRows)) =  
 	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt,clrRows)) then hardDrop (gs(m,(at,(x,y+1),af),nt,clrRows)) else lockDown(g)
 
 
 	(*Map riktning + 90grader*)
+	(* rcw f
+	TYPE: facing -> facing
+	PRE: none
+	POST: direction when direction f is rotated 90 degrees clockwise
+	EXAMPLE: rcw North = East
+	*)
 	fun rcw North = East
 	  | rcw East = South
 	  | rcw South = West
 	  | rcw West  = North   
+	
 	(*Map riktning - 90grader*)
+	(* rccw facing
+	TYPE: facing -> facing
+	PRE: none
+	POST: direction when direction f is rotated 90 degrees counterclockwise
+	EXAMPLE: rccw East = North
+	*)
 	fun rccw East = North
 	  | rccw South = East
 	  | rccw West = South
@@ -229,7 +308,7 @@ struct
 	PRE: TODO
 	POST: give the next state after command is performed if the command is allowed on state else NONE
 	EXEMPLE: TODO
-		*)
+	*)
 	fun doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), LeftShift) 	= Option.filter gamestate_Validation ( gs(m,(at,(x-1,y),af),nt,clrRows) )
 	|	doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), RightShift) = Option.filter gamestate_Validation ( gs(m,(at,(x+1,y),af),nt,clrRows) )
 	|	doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), SoftDrop) 	= if gamestate_Validation g 
@@ -247,7 +326,3 @@ struct
 
 
 end
-
-(*= if i > 0 then 
-		Vector.map (fn x => Vector.update (m, i, (getRow(m, (i-1)))) m) else 
-			m*)
