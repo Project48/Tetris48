@@ -23,11 +23,9 @@ struct
 	
 	(* getElement (m, i, j)
 	TYPE: 'a matrix * int * int -> 'a
-	PRE:
+	PRE: 
 	POST: the element in matrix m on the i:th row and the j:th column
-	EXAMPLE: 
-	getElement(#[#[0, 0, 1], #[0, 0, 0]], 0, 2) = 1 !ELLER!
-	getElement(Vector.fromList [Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 0, 2) = 1
+	EXAMPLE: getElement(Vector.fromList [Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 0, 2) = 1
 	*)
 	fun getElement (m, i, j) = Vector.sub(Vector.sub(m, i), j)
 
@@ -35,9 +33,7 @@ struct
 	TYPE: 'a matrix * int * int * 'a -> 'a matrix
 	PRE:
 	POST: replaces the element in matrix m on the i:th row and the j:th column with v
-	EXAMPLE: 
-	setElement(#[#[0, 0, 1], #[0, 0, 0]], 0, 2, 3) = #[#[0, 0, 3], #[0, 0, 0]] !ELLER!
-	setElement(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 0, 2, 3) = fromList[fromList[0, 0, 3], fromList[0, 0, 0]]
+	EXAMPLE: setElement(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 0, 2, 3) = fromList[fromList[0, 0, 3], fromList[0, 0, 0]]
 	*)
 	fun setElement (m, i, j, v) = Vector.update(m, i, Vector.update(Vector.sub(m, i), j, v))
 
@@ -51,8 +47,8 @@ struct
 
 	(* nRows m
 	TYPE: 'a matrix -> int
-	PRE: number of rows in matrix m
-	POST:
+	PRE: 
+	POST: number of rows in matrix m
 	EXAMPLE: nRows(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 2
 	*)
 	fun nRows m = Vector.length m
@@ -73,7 +69,12 @@ struct
 	*)
 	fun getRow (m : 'a matrix, i) = Vector.sub(m, i)
 
-
+	(* setRow (m, i, v)
+	TYPE: 'a matrix * int * 'a vector -> 'a vector vector
+	PRE:
+	POST: row i in matrix m replaced by element v
+	EXAMPLE: setRow(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 1, Vector.fromList[1,1,1]) = fromList[fromList[0, 0, 1], fromList[1, 1, 1]]
+	*)
 	fun setRow (m : 'a matrix, i, v) = Vector.update(m,i,v)
 end
 
