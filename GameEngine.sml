@@ -100,7 +100,8 @@ struct
 	(*position är en tuppel av typen int * int för att bestriva fria spelbara Tetromino:n position.
 	Den första elementet av tuppeln är vilken komumn i spel matrisen.
 	Den andra elementet av tuppeln är vilken rad i spel matrisen.
-	*)
+	*) 
+	TODO
 	type position = int * int
 	(*gamestate är immutable datatype som besriver det aktuella speltilståndet.
 		gamestate har instansen gs(spel_matrisen, (aktiv_tetromino_typ, aktiv_tetromino_position, aktiv_tetromino_facing),nästkommande_tetromino_typ, clearRows)
@@ -174,7 +175,6 @@ struct
 	*)
 	fun checkRow (m, i) = Vector.all  (fn NONE => false | SOME(_) => true) (getRow(m, i))
 
-
 	(* moveRows (m, i)
         TYPE: 'a matrix * int -> 'a matrix
         PRE: 0 <= i <= |m|
@@ -219,7 +219,6 @@ struct
         *)
 	fun deleteRow g = deleteRow' (g, 0)
 
-
 	(*
 	Validering av en gamestate för att undersöka om den befinersig i ett förbjudet tillstånd
 	*)
@@ -238,6 +237,14 @@ struct
 				))
 		end
 
+
+	(
+	(*lockDown_Validation state
+	TYPE: gamestate -> bool
+	PRE: TODO
+        POST: TODO
+        EXAMPLE: TODO
+        *)
 	fun lockDown_Validation (g as gs(m,(at,(x,y),af),nt,clrRows) ) = 
 		let
 			val blocks = List.map (fn (dx, dy) => (dy+y, dx+x)) (createBlocks at af)
@@ -274,6 +281,9 @@ struct
 	POST: state efter en harddrop opration
 	EXAMPLE: TODO
 	*) 
+	(*
+	VARIANT: y
+	*)
 	fun hardDrop (g as gs(m,(at,(x,y),af),nt,clrRows)) =  
 	if gamestate_Validation (gs(m,(at,(x,y+1),af),nt,clrRows)) then hardDrop (gs(m,(at,(x,y+1),af),nt,clrRows)) else lockDown(g)
 
