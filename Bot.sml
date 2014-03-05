@@ -4,12 +4,6 @@ sig
 	val getGameCommands : GameEngine.gamestate -> GameEngine.gameCommand list
 end
 
-structure SmartBot :> BOT = 
-struct
-	open GameEngine
-	fun getGameCommands (g) =  (SoftDrop::SoftDrop::SoftDrop::SoftDrop::LeftShift::SoftDrop::LeftShift::SoftDrop::RotateCW::SoftDrop::LeftShift::SoftDrop::RotateCW::SoftDrop::RightShift::SoftDrop::RotateCCW::SoftDrop::SoftDrop::SoftDrop::RotateCW::SoftDrop::RightShift::SoftDrop::RotateCCW::SoftDrop::RotateCW::SoftDrop::RotateCW::SoftDrop::RotateCCW::SoftDrop::RotateCCW::SoftDrop::RightShift::SoftDrop::RotateCW::SoftDrop::RightShift::SoftDrop::SoftDrop::SoftDrop::RightShift::SoftDrop::SoftDrop::SoftDrop::nil)
-end
-
 structure FakeBot :> BOT = 
 struct
 	open GameEngine
@@ -39,55 +33,107 @@ struct
 open Matrix
 open GameEngine
 
-(* n elements of c added to list l*)
+(* moveRepetition (c, n, l)
+TYPE: int * 'a * 'a list -> 'a list
+PRE:none
+POST: n amounts of element c appended to l
+EXAMPLE: moveRepetition (2, "hej", []) = ["hej", "hej"]
+*)
+(*VARIANT: n *)
 fun moveRepetition (c, 0, l) = l
   | moveRepetition (c, n, l) = moveRepetition (c, n - 1, c::l)
 
-(*converts a gamestate into an int based on block positions*)
+
+(* gameValue g
+TYPE: gameState -> int
+PRE: true
+POST: the game value of g
+EXAMPLE:
+*)
+(*VARIANT:*)
 fun gameValue (g as gs(m,(at,(x,y),af),nt, score)) =
     let
 	val nRows = nRows m
 	val nCols = nCols m
-			 
+			  
+	(* gameValue' (r, c, n)
+        TYPE: int * int * int -> int
+        PRE: all rows and columns are same length
+        POST: height component of the game value
+        EXAMPLE:
+	 *)
+	(*VARIANT: r *)	 
 	fun gameValue' (r, c, n) =
 	    if r >= nRows then n 
 	    else if c >= nCols then gameValue'(r+1, 0, n)
 	    else if isSome (Matrix.getElement(m, r, c)) then gameValue'(r, c+1, n + (nRows - (r + 1))) 
 	    else gameValue'(r, c+1, n)
- 
-       fun holesAmount' (r, c, n) =
-	   if r >= nRows then n 
-	   else if isSome (Matrix.getElement(m, r, c)) then holesAmount' (r + 1, c, n)
-	   else holesAmount' (r + 1, c, n + 1)								 
-	   
-      (* amount of holes in the gamestate *)
+
+	(* holesAmount' (r, c, n)
+        TYPE: int * int * int -> int
+        PRE: all rows and columns are same length
+        POST: amount of empty spaces in column c starting at row r
+        EXAMPLE:
+	 *)
+	(*VARIANT: r *)		   
+	fun holesAmount' (r, c, n) =
+	    if r >= nRows then n 
+	    else if isSome (Matrix.getElement(m, r, c)) then holesAmount' (r + 1, c, n)
+	    else holesAmount' (r + 1, c, n + 1)								 
+			      
+       (* holesAmount (r, c, n)
+        TYPE: int * int * int -> int
+        PRE:all rows and columns are same length
+        POST: amount of "holes" in g
+        EXAMPLE:
+	 *)
+	(*VARIANT: c *)
        fun holesAmount (r, c, n) = 
 	   if c >= nCols then n
 	   else if r >= nRows then holesAmount(0, c + 1, n)
 	   else if isSome (Matrix.getElement(m, r, c)) then holesAmount(0, c + 1, holesAmount'(r, c, n))
 	   else holesAmount (r + 1, c, n)
 
-      (* amount of cleared rows *)
-       fun clearedRows (r, n) =
-	   if r >= nRows then n 
-	   else if not (Vector.exists (not o isSome) (Matrix.getRow (m, r))) then clearedRows(r + 1, n + 1)
-	   else clearedRows(r + 1, n)
-	   	     	       	   
     in
 	gameValue'(0, 0, 0) + (4 * holesAmount(0, 0, 0)) + (~5 * score)
     end 
 
-(*uses hardDrop on g and if NONE is returned then returns massive number else the gameValue*)
+(* dropTest g
+TYPE: gameState -> int
+PRE: true
+POST: ifSome g then gameValue (hardDrop g) else 10000
+EXAMPLE:
+*)
 fun dropTest g = if isSome (hardDrop g) then gameValue (valOf(hardDrop g)) else 10000
 
-(*converts a gamestate and a list of moves into a value, dropTests when out of commands*)
+(* moveValue (g, l)
+TYPE: gameState * command List -> int
+PRE: true
+POST: dropTest value of g after all commands in l have been executed
+EXAMPLE:
+*)
+(*VARIANT: length l *)
 fun moveValue (g, []) = dropTest g
   | moveValue (g, l::ls) = moveValue(valOf (doCommand (g, l)), ls) 			      
 
 
 (*returns amount of space right of block*)
+
+(* spaceRight g
+TYPE: gameState -> int
+PRE: true
+POST: amount of steps possible to move to the right
+EXAMPLE:
+*)
 fun spaceRight g =
     let
+        (* spaceRight g
+        TYPE: gameState * command -> int
+        PRE: true
+        POST: amount of steps possible to move to the right
+        EXAMPLE:
+	 *)
+	(*VARIANT: isSome gg *)
 	fun spaceRight'(gg, n) =
 	   case doCommand(gg, RightShift) of 
 	       NONE => n
@@ -96,9 +142,21 @@ fun spaceRight g =
 	spaceRight'(g, 0)
 end
 
-(*returns amount of space left of block*)
+(* spaceLeft g
+TYPE:gameState -> int
+PRE: true
+POST: amount of steps possible to move to the left
+EXAMPLE:
+*)
 fun spaceLeft g = 
     let
+	(* spaceRight g
+        TYPE: gameState * command -> int
+        PRE: true
+        POST: amount of steps possible to move to the left
+        EXAMPLE:
+	 *)
+	(*VARIANT: isSome gg *)
 	fun spaceLeft'(gg, n) =
 	    case doCommand(gg, LeftShift) of 
 		NONE => n 
@@ -107,10 +165,23 @@ fun spaceLeft g =
 	spaceLeft'(g, 0)
 end
 
-(*returns list of moves for the best move choice on the right side of the matrix/gamestate and its value*)
+(* bestRight g
+TYPE: gameState -> command list * int
+PRE: true
+POST: tuple of list of series best commands to perform for lowest game value and the game value right side of the moving block
+EXAMPLE:
+*)
 fun bestRight g = 
     let
 	val spotsRight = spaceRight g
+
+	(* bestRight' n (l, v)
+        TYPE: int * (command list * int) -> command list * int
+        PRE: true
+        POST: tuple of list of series best commands to perform for lowest game value and the game value right side of the moving block
+        EXAMPLE:
+	 *)
+	(*VARIANT: n *)			    
 	fun bestRight'(0, (l, v)) = (l, v)
 	  | bestRight'(n, (l, v)) = 
 	    let
@@ -124,9 +195,23 @@ fun bestRight g =
 end
 
 (* returns list of moves for the best move choice on the left side of the matrix/gamestate and its value*)
+
+(* bestLeft g
+TYPE: gameState -> command list * int
+PRE: true
+POST: tuple of list of series best commands to perform for lowest game value and the game value left side of the moving block
+EXAMPLE:
+*)
 fun bestLeft g = 
     let
 	val spotsLeft = spaceLeft g
+	(* bestLeft' n (l, v)
+        TYPE: int * (command list * int) -> command list * int
+        PRE: true
+        POST: tuple of list of series of commands to perform for lowest game value and the game value left side of the moving block
+        EXAMPLE:
+	 *)
+	(*VARIANT: n *)				  
 	fun bestLeft'(0, (l, v)) = (l, v)
 	  | bestLeft'(n, (l, v)) = 
 	    let
@@ -138,9 +223,13 @@ fun bestLeft g =
 	in
 	    bestLeft'(spotsLeft, ([], moveValue (g, [])))
 end
-
-								  	
-(*return the best choice of both right and left side of the matrix and the value*)
+								  
+(* bestChoice' g
+TYPE: gameState -> command list * int
+PRE: true
+POST: tuple of list of series of commands to perform for the lowest game value and that game value without rotating
+EXAMPLE:
+*)
 fun bestChoice' g  = 
     let
 	val (rightMoves, rightVal) = bestRight g
@@ -149,8 +238,12 @@ fun bestChoice' g  =
 	if rightVal < leftVal then (rightMoves, rightVal) else (leftMoves, leftVal)
 end
 
-(*returns the best choice of both right and left side of the matrix and rotation*)
-
+(* bestChoice g
+TYPE: gameState -> command list
+PRE: true
+POST: tuple of list of series of commands to perform for the lowest game value with rotations
+EXAMPLE:
+*)
 fun bestChoice g = 
     let
 	val (nMoves, nVal) = bestChoice' g
@@ -166,22 +259,6 @@ fun bestChoice g =
 	 SoftDrop :: SoftDrop :: SoftDrop :: bestMove @ [HardDrop]
 end
     
-
-
-
-(*help functions for testing *)
-fun newGameB (r,c) = gs((createMatrix (r,c, NONE : block option)),
-	 ( Tetromino_T, ((c-1) div 2,0) : position ,  North),  
-	Tetromino_I , 0)
-
-fun x g = Experiment.printGS g
-
-fun h g = valOf (hardDrop g)
-
-fun d (g, []) = h g
-  | d (g, l::ls) = d (valOf (doCommand(g, l)), ls) 
-
-
 val getGameCommands = bestChoice
 
 end
