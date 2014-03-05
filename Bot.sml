@@ -251,10 +251,10 @@ fun bestChoice g =
 	val (sMoves, sVal) = bestChoice'(valOf (doCommand((valOf (doCommand(g, RotateCW))), RotateCW)))
 	val (wMoves, wVal) = bestChoice'(valOf (doCommand(g, RotateCCW)))
 	
-	val (neMoves, neVal) = if nVal < eVal then (nMoves, nVal) else (RotateCW::eMoves, eVal)
-	val (swMoves, swVal) = if wVal < sVal then (RotateCCW::wMoves, wVal) else (RotateCW::RotateCW::sMoves, sVal)
+	val (neMoves, neVal) = if eVal < nVal then (RotateCW::eMoves, eVal) else (nMoves, nVal)
+	val (swMoves, swVal) = if sVal < wVal then (RotateCW::RotateCW::sMoves, sVal) else(RotateCCW::wMoves, wVal)  
 
-        val bestMove = if neVal < swVal then neMoves else swMoves
+        val bestMove = if swVal < neVal then swMoves else neMoves
      in
 	 SoftDrop :: SoftDrop :: SoftDrop :: bestMove @ [HardDrop]
 end
