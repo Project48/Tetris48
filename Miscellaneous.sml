@@ -1,23 +1,32 @@
 (*
-Blandade funktioner som kan vara bra att ha.
+Functions that can be be useful.
 *)
 
 structure Miscellaneous = 
 struct
-	(*print fast med radbrytning på slutet*)
+
+	(* prinln s
+	TYPE: string -> unit
+	PRE: none
+	POST: unit
+	EXAMPLE: println "hi" = prints hi with a linebreak after to stdout
+	*)
 	fun println s = print (s ^ "\n")
 
-
+	(* delay sec
+	TYPE: real -> unit
+	PRE: none
+	POST: unit
+	EXAMPLE: delay 60.0 = returns unit after 60 seconds
+	*)
 	fun delay sec = OS.Process.sleep (Time.fromReal sec)
 
-	
+	(* printInt i
+	TYPE: int -> unit
+	PRE: none
+	POST: unit
+	EXAMPLE: printInt 1 = prints 1 to stdout
+	*)
 	fun printInt i = print(Int.toString(i))
 
-	
-	fun range (a,b) = List.tabulate (b-a, fn x => x+a)
-
-
-	fun claer () = List.app (fn s => print s) (List.tabulate (100, (fn _ => "\n")))
-
-	
 end
