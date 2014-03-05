@@ -23,27 +23,26 @@ struct
 	
 	(* getElement (m, i, j)
 	TYPE: 'a matrix * int * int -> 'a
-	PRE:
+	PRE: 0 <= i < columns of m and 0 <= j < rows of m
 	POST: the element in matrix m on the i:th row and the j:th column
-	EXAMPLE: 
-	getElement(#[#[0, 0, 1], #[0, 0, 0]], 0, 2) = 1 !ELLER!
-	getElement(Vector.fromList [Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 0, 2) = 1
+	EXAMPLE: getElement(setElement(createMatrix(3,3,0), 0, 2, 3), 0, 2) = 3
 	*)
 	fun getElement (m, i, j) = Vector.sub(Vector.sub(m, i), j)
 
 	(* setElement (m, i, j, v)
 	TYPE: 'a matrix * int * int * 'a -> 'a matrix
-	PRE:
+	PRE: 0 <= i < columns of m and 0 <= j < rows of m
 	POST: replaces the element in matrix m on the i:th row and the j:th column with v
-	EXAMPLE: 
-	setElement(#[#[0, 0, 1], #[0, 0, 0]], 0, 2, 3) = #[#[0, 0, 3], #[0, 0, 0]] !ELLER!
-	setElement(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 0, 2, 3) = fromList[fromList[0, 0, 3], fromList[0, 0, 0]]
+	EXAMPLE: setElement(createMatrix(3,3,0), 0, 2, 3) = 
+[0  0  3]
+[0  0  0]
+[0  0  0]
 	*)
 	fun setElement (m, i, j, v) = Vector.update(m, i, Vector.update(Vector.sub(m, i), j, v))
 
 	(* nCols m
 	TYPE: 'a matrix -> int
-	PRE:
+	PRE: none
 	POST: number of columns in matrix m
 	EXAMPLE: nCols(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 3
 	*)
@@ -51,29 +50,38 @@ struct
 
 	(* nRows m
 	TYPE: 'a matrix -> int
-	PRE: number of rows in matrix m
-	POST:
-	EXAMPLE: nRows(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]]) = 2
+	PRE: none
+	POST: number of rows in matrix m
+	EXAMPLE: nRows(createMatrix (1,2,3)) = 1
 	*)
 	fun nRows m = Vector.length m
 	
 	(* createMatrix (i, j, init)
 	TYPE: int * int * 'a -> 'a matrix
-	PRE:
+	PRE: 0 < i, j
 	POST: matrix that have i rows and j columns with init as all elements
-	EXAMPLE: createMatrix (2, 3, 0) = fromList[fromList[0, 0, 0], fromList[0, 0, 0]]
+	EXAMPLE: createMatrix (2, 3, 0) = 
+[0   0   0]
+[0   0   0]
 	*)
 	fun createMatrix (i, j, init) = Vector.tabulate(i, fn x => Vector.tabulate(j, fn x => init))
 	
 	(* getRow (m, i)
 	TYPE: 'a matrix * int -> 'a vector
-	PRE:
+	PRE: 0 <= i < columns of m
 	POST: row i in matrix m
-	EXAMPLE: getRow(Vector.fromList[Vector.fromList[0,0,1],Vector.fromList[0,0,0]], 1) = fromList[0, 0, 0]
+	EXAMPLE: getRow(createMatrix (2, 3, 0) , 1) = Vector.fromList[0, 0, 0]
 	*)
 	fun getRow (m : 'a matrix, i) = Vector.sub(m, i)
 
-
+	(* setRow (m, i, v)
+	TYPE: 'a matrix * int * 'a vector -> 'a matrix
+	PRE:  0 <= i < columns of m
+	POST: row i in matrix m replaced by element v
+	EXAMPLE: setRow(createMatrix (2, 3, 0), 1, Vector.fromList[1,1,1]) =
+[0  0  0]
+[1  1  1]
+	*)
 	fun setRow (m : 'a matrix, i, v) = Vector.update(m,i,v)
 end
 
