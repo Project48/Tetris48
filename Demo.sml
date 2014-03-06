@@ -102,10 +102,10 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 	 			    loop g (SoftDrop::nil) 
 	 			    )
 
-	(* newGame (r, j)
+	(* newGame (r, c)
 	TYPE: int * int -> gamestate
 	PRE: 2 < r, j
-	POST: based on a matrix with r rows and j columns it returns a gamestate when the matrix has reached gameover
+	POST: based on a matrix with r rows and c columns it returns a gamestate when the matrix has reached gameover
 	*)
 	(*
 	SIDE EFFECTS: prints gamestate to stdout in each recursion of loop
