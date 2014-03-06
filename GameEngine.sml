@@ -55,7 +55,7 @@ struct
  	*)
 	datatype block = simpleblock;
 
-	(* REPRESENTATION CONVENTION: position (x,y) where x is which column, and y is which row in the game matrix
+	(* REPRESENTATION CONVENTION: position (x,y) where x is the column, and y is the row in the game matrix
 	   REPRESENTATION INVARIANT: none
 	 *)
 	type position = int * int
@@ -109,7 +109,7 @@ struct
 
 	(* checkRow (m, i)
 	TYPE: 'a option matrix * int -> bool
-	PRE: 0 <= i < |m|
+	PRE: 0 <= i < number of rows in m
 	POST: true if row i in matrix m is full else false
 	EXAMPLE: checkRow (createMatrix (2, 2, NONE : block option), 0) = false
 	*)
@@ -117,7 +117,7 @@ struct
 
 	(* moveRows (m, i)
         TYPE: 'a matrix * int -> 'a matrix
-        PRE: 0 <= i <= |m|
+        PRE: 0 <= i <= number of rows in m
         POST: TODO
         EXAMPLE: moveRows (setRow((createMatrix (2, 2, NONE), 0, Vector.fromList[SOME(1), NONE])), 1) = 
         [SOME(1) NONE]
@@ -131,7 +131,7 @@ struct
 
         (* deleteRow' (state, i)
         TYPE: gamestate * int -> gamestate
-        PRE: 0 <= i <= |m|
+        PRE: 0 <= i <= number of rows in m
         POST: if row i in matrix m in gamestate state is "full" then state with m without that row, but with an "empty" row at the top instead else state
         EXAMPLE: deleteRow' (gs(createMatrix(2,2,NONE),(at, ap, af),nt,clrRows)) = state
         *)
@@ -153,7 +153,7 @@ struct
 
         (* deleteRow state
         TYPE: gamestate -> gamestate
-        PRE: TODO
+        PRE: state must be validated
         POST: if row i in matrix m in gamestate state is "full" then state with m without that row, but with an "empty" row at the top instead else state
         EXAMPLE: deleteRow (gs(createMatrix(2,2,NONE),(at, ap, af),nt,clrRows)) = state
         *)
@@ -161,7 +161,7 @@ struct
 
 	(* gamestate_Validation state
         TYPE: gamestate -> bool
-        PRE: TODO
+        PRE: state must be validated
         POST: true if gamestate state is allowed else false
         EXAMPLE: gamestate_Validation (gs((createMatrix(20,10, NONE),(Tetromino_I,(5,5),North),Tetromino_T,0))) = true
         *)
@@ -176,7 +176,7 @@ struct
 	
 	(* lockDown_Validation state
 	TYPE: gamestate -> bool
-	PRE: TODO
+	PRE: state must be validated
         POST: true if active tetromino at in gamestate state is inside matrix m else false
         EXAMPLE: lockDown_Validation(gs((createMatrix(20,10, NONE),(Tetromino_I,(5,5),North),Tetromino_T,0))) = true
         *)
@@ -189,7 +189,6 @@ struct
 				))
 		end
 
-	(*Låser det aktuela blocket*)
 	(*lockDown state
 	TYPE: gamestate -> gamestate option
 	PRE: state must be validated
@@ -245,8 +244,8 @@ struct
 
 	(* doCommand (state, command)
 	TYPE: gamestate * gameCommand -> gamestate option
-	PRE: gamestate must be validated
-	POST: give the next state after command is performed if the command is allowed on state else NONE
+	PRE: state must be validated
+	POST: give the next state after command is performed on gamestate state if the command is allowed on state else NONE
 	*)
 	fun doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), LeftShift) 	= Option.filter gamestate_Validation ( gs(m,(at,(x-1,y),af),nt,clrRows) )
 	|	doCommand (g as gs(m,(at,(x,y),af),nt,clrRows), RightShift) = Option.filter gamestate_Validation ( gs(m,(at,(x+1,y),af),nt,clrRows) )
