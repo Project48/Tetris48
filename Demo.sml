@@ -76,6 +76,9 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 	(* 
 	SIDE EFFECTS: prints gamestate state in each recursion
 	*)
+	(*
+	VARIANT: ???
+	*)
 	fun loop g [] = 
 		let
 			val _ = printGS g 
