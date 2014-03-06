@@ -104,7 +104,7 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 
 	(* newGame (r, c)
 	TYPE: int * int -> gamestate
-	PRE: 2 < r, j
+	PRE: 2 < r, c
 	POST: based on a matrix with r rows and c columns it returns a gamestate when the matrix has reached gameover
 	*)
 	(*
