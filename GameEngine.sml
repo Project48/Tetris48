@@ -75,7 +75,7 @@ struct
    	*)
 	datatype tetromino_type = Tetromino_O | Tetromino_I | Tetromino_S | Tetromino_Z | Tetromino_L | Tetromino_J | Tetromino_T
 	
-	(*Denna datatype är tänkt att basriva dom fyra riktningar ensidig Tetromino kan ha.
+	(*  Denna datatype är tänkt att basriva dom fyra riktningar ensidig Tetromino kan ha.
 		North: grund/start riktningen av en Tetromino 
 		East: är 90 grader medsols eller 270 grader motsols från grund riktningen
 		South: är 180 grader medsols eller 180 grader motsols från grund riktningen
@@ -101,7 +101,7 @@ struct
 	Den första elementet av tuppeln är vilken komumn i spel matrisen.
 	Den andra elementet av tuppeln är vilken rad i spel matrisen.
 	*) 
-	TODO
+	(*TODO*)
 	type position = int * int
 	(*gamestate är immutable datatype som besriver det aktuella speltilståndet.
 		gamestate har instansen gs(spel_matrisen, (aktiv_tetromino_typ, aktiv_tetromino_position, aktiv_tetromino_facing),nästkommande_tetromino_typ, clearRows)
@@ -238,7 +238,7 @@ struct
 		end
 
 
-	(
+	
 	(*lockDown_Validation state
 	TYPE: gamestate -> bool
 	PRE: TODO
