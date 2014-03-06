@@ -1,6 +1,5 @@
 use "Matrix";
 
-(*En Spelmotor för tetris. *)
 structure GameEngine = 
 struct
     open Matrix
@@ -51,7 +50,7 @@ struct
 	datatype facing = North | East | South | West
 	
 	(* REPRESENTATION CONVENTION: one of four blocks of a tetromino
-   	   REPRESENTATION INVARIANT: is of type Option
+   	   REPRESENTATION INVARIANT: none
  	*)
 	datatype block = simpleblock;
 
@@ -60,8 +59,8 @@ struct
 	 *)
 	type position = int * int
 		
-	(* REPRESENTATION CONVENTION: a gamestate consisting of game matrix m, active tetromino type at, active tetromino position (x,y), active tetromino facing af, next tetromino type nt and clearRows clrRows, represented by (gs(m,(at,(x,y),af),nt,clrRows))
-   	   REPRESENTATION INVARIANT: all blocks in m are locked. If a block in m is NONE then the place is empty, otherwise a block is locked there 
+	(* REPRESENTATION CONVENTION: a gamestate consisting of game matrix m, active tetromino type at, active tetromino position (x,y), active tetromino facing af, next tetromino type nt and clearRows clrRows, represented by (gs(m,(at,(x,y),af),nt,clrRows)). All blocks in m are lockdown, if an element in m is NONE then the place is empty
+   	   REPRESENTATION INVARIANT: tetromino_type, position and facing must not be so that any part of the tetromino overlaps any non-empty block in the matrix, not either so it lies below, on the left or the right of the matrix
  	*)
 	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type * int
 	
@@ -162,7 +161,7 @@ struct
 	(* gamestate_Validation state
         TYPE: gamestate -> bool
         PRE: state must be validated
-        POST: true if gamestate state is allowed else false
+        POST: true if the active tetromino is inside the matrix or just above the top else false
         EXAMPLE: gamestate_Validation (gs((createMatrix(20,10, NONE),(Tetromino_I,(5,5),North),Tetromino_T,0))) = true
         *)
 	fun gamestate_Validation (g as gs(m,(at,(x,y),af),nt,clrRows) ) = 
