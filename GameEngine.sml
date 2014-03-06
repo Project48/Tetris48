@@ -75,7 +75,7 @@ struct
    	*)
 	datatype tetromino_type = Tetromino_O | Tetromino_I | Tetromino_S | Tetromino_Z | Tetromino_L | Tetromino_J | Tetromino_T
 	
-	(*Denna datatype är tänkt att basriva dom fyra riktningar ensidig Tetromino kan ha.
+	(*  Denna datatype är tänkt att basriva dom fyra riktningar ensidig Tetromino kan ha.
 		North: grund/start riktningen av en Tetromino 
 		East: är 90 grader medsols eller 270 grader motsols från grund riktningen
 		South: är 180 grader medsols eller 180 grader motsols från grund riktningen
@@ -101,7 +101,7 @@ struct
 	Den första elementet av tuppeln är vilken komumn i spel matrisen.
 	Den andra elementet av tuppeln är vilken rad i spel matrisen.
 	*) 
-	TODO
+	(*TODO*)
 	type position = int * int
 	(*gamestate är immutable datatype som besriver det aktuella speltilståndet.
 		gamestate har instansen gs(spel_matrisen, (aktiv_tetromino_typ, aktiv_tetromino_position, aktiv_tetromino_facing),nästkommande_tetromino_typ, clearRows)
@@ -124,14 +124,13 @@ struct
 	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type * int
 	
 
-	(*Skapar en matris med blocken från en tetromino_type och facing*)
 	(* createBlocks tt fac
-	TYPE: tetromino_type -> facing -> (int * int) list
-	PRE: TODO
+	TYPE: tetromino_type -> facing -> position list
+	PRE: none
 	POST: a list of coordinates for tetromino type tt in the direction fac
 	EXAMPLE: createBlocks Tetromino_T North = [(~1, 0), (0, ~1), (1, 0), (0, 0)]
 	*)
-	fun 	createBlocks Tetromino_T North 	= (~1,0)::(0,~1)::(1,0)       ::(0,0)::nil
+	fun 	createBlocks Tetromino_T North 	= ((~1,0)::(0,~1)::(1,0)       ::(0,0)::nil) : position list
 	|	createBlocks Tetromino_T East 	=         (0,~1)::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T South 	= (~1,0)        ::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T West 	= (~1,0)::(0,~1)       ::(0,1)::(0,0)::nil
@@ -238,7 +237,7 @@ struct
 		end
 
 
-	(
+	
 	(*lockDown_Validation state
 	TYPE: gamestate -> bool
 	PRE: TODO
@@ -331,8 +330,4 @@ struct
 	|	doCommand (g, HardDrop) = hardDrop g
 	|	doCommand (g :gamestate, c :gameCommand) = NONE (*unknown command*)
 	
-	
-
-
-
 end
