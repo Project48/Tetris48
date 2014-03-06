@@ -70,7 +70,7 @@ struct
 	POST: a list of coordinates for tetromino type tt in the direction fac
 	EXAMPLE: createBlocks Tetromino_T North = [(~1, 0), (0, ~1), (1, 0), (0, 0)]
 	*)
-	fun 	createBlocks Tetromino_T North 	= ((~1,0)::(0,~1)::(1,0)       ::(0,0)::nil) : position list
+	fun createBlocks Tetromino_T North 	= ((~1,0)::(0,~1)::(1,0)       ::(0,0)::nil) : position list
 	|	createBlocks Tetromino_T East 	=         (0,~1)::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T South 	= (~1,0)        ::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T West 	= (~1,0)::(0,~1)       ::(0,1)::(0,0)::nil
@@ -82,22 +82,22 @@ struct
 
 	|	createBlocks Tetromino_J North   = (~1,~1)::(~1,0)::(0,0)::(1,0)::nil
 	| 	createBlocks Tetromino_J East    = (1,~1)::(0,~1)::(0,0)::(0,1)::nil
-	|       createBlocks Tetromino_J South   = (~1,0)::(0,0)::(1,0)::(1,1)::nil
+	|   createBlocks Tetromino_J South   = (~1,0)::(0,0)::(1,0)::(1,1)::nil
 	| 	createBlocks Tetromino_J West    = (0,~1)::(0,0)::(0,1)::(~1,1)::nil
 
 	|	createBlocks Tetromino_L North   = (~1,0)::(0,0)::(1,0)::(1,~1)::nil
 	|	createBlocks Tetromino_L East    = (0,~1)::(0,0)::(0,1)::(1,1)::nil
 	|	createBlocks Tetromino_L South   = (~1,1)::(~1,0)::(0,0)::(1,0)::nil
-	|	createBlocks Tetromino_L West	 = (~1,1)::(0,~1)::(0,0)::(0,1)::nil
+	|	createBlocks Tetromino_L West	 = (1,1)::(0,~1)::(0,0)::(0,1)::nil
 
 	|	createBlocks Tetromino_S North 	 = (1,~1)::(0,~1)::(0,0)::(~1,0)::nil
-	| 	createBlocks Tetromino_S East 	 = (0,~1)::(0,0)::(1,0)::(1,~1)::nil
-	|	createBlocks Tetromino_S South	 = (1,0)::(0,0)::(0,1)::(~1,1)::nil
+	| 	createBlocks Tetromino_S East 	 = (~1,~1)::(~1,0)::(0,0)::(0,1)::nil
+	|	createBlocks Tetromino_S South	 = (1,~1)::(0,~1)::(0,0)::(~1,0)::nil
 	|	createBlocks Tetromino_S West	 = (~1,~1)::(~1,0)::(0,0)::(0,1)::nil
 
 	|	createBlocks Tetromino_Z North	 = (~1,~1)::(0,~1)::(0,0)::(1,0)::nil
-	|	createBlocks Tetromino_Z East	 = (1,~1)::(1,0)::(0,0)::(0,1)::nil
-	|	createBlocks Tetromino_Z South	 = (~1,0)::(0,0)::(0,1)::(1,1)::nil
+	|	createBlocks Tetromino_Z East	 = (0,~1)::(0,0)::(~1,0)::(~1,1)::nil
+	|	createBlocks Tetromino_Z South	 = (~1,~1)::(0,~1)::(0,0)::(1,0)::nil
 	|	createBlocks Tetromino_Z West	 = (0,~1)::(0,0)::(~1,0)::(~1,1)::nil
 
 	|	createBlocks Tetromino_O North	 = (0,~1)::(0,0)::(1,~1)::(1,0)::nil
