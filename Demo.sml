@@ -71,7 +71,7 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 	(* loop state com
 	TYPE: gamestate -> gameCommand list -> gamestate
 	PRE: gamestate must be validated
-	POST: gamestate state when HardDrop or Softdrop in commandlist com can not be performed (gameover)
+	POST: gamestate state when HardDrop or Softdrop in GameCommand list com can not be performed (gameover)
 	*)
 	(* 
 	SIDE EFFECTS: prints gamestate state in each recursion
