@@ -1,13 +1,13 @@
+(*Demo.sml*)
+
 (*
 	use "Matrix";
-	use "experiment";
 	use "Bot";
-	use "GameEngine";	
+	use "GameEngine";
+	use "Bot";
 *)
-(*use "Bot";*)
 
 
-(*Demo.sml*)
 structure Demo = 
 struct
 	val comandDelay = 0.0
