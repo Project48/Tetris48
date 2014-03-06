@@ -1,0 +1,6 @@
+
+<<<<Nasta Kommentar>>>>>
+Main.sml
+<<<<Nasta Kommentar>>>>>
+ autostart
+start();
