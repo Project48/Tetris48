@@ -10,9 +10,8 @@
 
 structure Demo = 
 struct
-	val comandDelay = 0.0
+	val comandDelay = 0.5
 	val unableDelay = 1.0
-	structure DemoBot = FooBot
 
 	open GameEngine
 	open Matrix
@@ -57,6 +56,10 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 			)
 	in
 		(
+		  print "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		  print "--------+";
+		  println (( (concat o List.tabulate) (cols, fn _ => 
+		  	"--"))^"+");
 		  List.tabulate (rows,  printrad);
 		  println "--------+";
 		  print "NEXT: " ;
@@ -82,7 +85,7 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 	fun loop g [] = 
 		let
 			val _ = printGS g 
-			val coms = DemoBot.getGameCommands(g)
+			val coms = Bot.getGameCommands(g)
 			val coms = if coms <> nil then coms else (println "not command!"; delay (unableDelay*0.25); println "fake gravity applied..."; delay (unableDelay*0.75);  [SoftDrop]) 
 		in
 			loop g coms

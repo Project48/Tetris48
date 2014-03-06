@@ -73,3 +73,4 @@ if (isSome(List.find (fn (x,y) => x < ~10 orelse 10 < x orelse y < ~10 orelse y 
 
  then true else isSome (doCommand (gs(Matrix.createMatrix (100,100,NONE : block option),(Tetromino_I,(50,50),North), Tetromino_I , 0),SoftDrop))
 );
+(20, checkRow (createMatrix (2, 2, NONE : block option), 0) = false);
