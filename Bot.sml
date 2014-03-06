@@ -229,7 +229,26 @@ fun bestChoice g =
      in
 	 SoftDrop :: SoftDrop :: SoftDrop :: bestMove @ [HardDrop]
 end
+
+(*prepChoice' g n
+TYPE: gameState * int -> command List
+PRE: true
+POST: bestChoice g after n amount of softDrop applied, if invalid move then empty list
+*)
+(*VARIANT: n*)
+fun prepChoice' (g, 0) = bestChoice g
+  | prepChoice' (g, n) =
+    case doCommand (g, SoftDrop) of
+	SOME (x) => prepChoice' (x, n-1)
+     |  NONE  => [HardDrop]
+
+(*prepChoice g n
+TYPE: gameState -> command List
+PRE: true
+POST: prepChoice' (g, 3)
+*)
+fun prepChoice g = prepChoice' (g, 3)
     
-val getGameCommands = bestChoice
+val getGameCommands = prepChoice 
 
 end
