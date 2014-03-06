@@ -124,14 +124,13 @@ struct
 	datatype gamestate = gs of block option matrix * (tetromino_type * position * facing) * tetromino_type * int
 	
 
-	(*Skapar en matris med blocken från en tetromino_type och facing*)
 	(* createBlocks tt fac
-	TYPE: tetromino_type -> facing -> (int * int) list
-	PRE: TODO
+	TYPE: tetromino_type -> facing -> position list
+	PRE: none
 	POST: a list of coordinates for tetromino type tt in the direction fac
 	EXAMPLE: createBlocks Tetromino_T North = [(~1, 0), (0, ~1), (1, 0), (0, 0)]
 	*)
-	fun 	createBlocks Tetromino_T North 	= (~1,0)::(0,~1)::(1,0)       ::(0,0)::nil
+	fun 	createBlocks Tetromino_T North 	= ((~1,0)::(0,~1)::(1,0)       ::(0,0)::nil) : position list
 	|	createBlocks Tetromino_T East 	=         (0,~1)::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T South 	= (~1,0)        ::(1,0)::(0,1)::(0,0)::nil
 	|	createBlocks Tetromino_T West 	= (~1,0)::(0,~1)       ::(0,1)::(0,0)::nil
@@ -331,8 +330,4 @@ struct
 	|	doCommand (g, HardDrop) = hardDrop g
 	|	doCommand (g :gamestate, c :gameCommand) = NONE (*unknown command*)
 	
-	
-
-
-
 end
