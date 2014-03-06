@@ -19,7 +19,14 @@ struct
 	open Miscellaneous
 
 	
-
+(* printGS state
+TYPE: gamestate -> unit
+PRE: gamestate must be validated
+POST: unit
+*)
+(*
+SIDE EFFECTS: prints gamestate state to stdout
+*)
 fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) = 
 	let
 		fun printGS' (gs(m,(at,(x,y),af),nt,cr), i, j) = 
@@ -61,7 +68,14 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 		)
 	end
 	
-
+	(* loop state com
+	TYPE: gamestate -> gameCommand list -> gamestate
+	PRE: gamestate must be validated
+	POST: gamestate state when HardDrop or Softdrop in commandlist com can not be performed (gameover)
+	*)
+	(* 
+	SIDE EFFECTS: prints gamestate state in each recursion
+	*)
 	fun loop g [] = 
 		let
 			val _ = printGS g 
@@ -85,7 +99,14 @@ fun printGS (state as gs(m,(at,(x,y),af),nt,cr)) =
 	 			    loop g (SoftDrop::nil) 
 	 			    )
 
-
+	(* newGame (r, j)
+	TYPE: int * int -> gamestate
+	PRE: 2 < r, j
+	POST: based on a matrix with r rows and j columns it returns a gamestate when the matrix has reached gameover
+	*)
+	(*
+	SIDE EFFECTS: prints gamestate to stdout in each recursion of loop
+	*)
 	fun newGame (r,c) = loop (gs((createMatrix (r,c, NONE : block option)),
 	 ( Tetromino_T, ((c-1) div 2,0) : position ,  North),  
 	Tetromino_I, 0 )) []
