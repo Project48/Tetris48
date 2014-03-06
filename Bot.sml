@@ -1,4 +1,3 @@
-
 signature BOT = 
 sig
 	val getGameCommands : GameEngine.gamestate -> GameEngine.gameCommand list
@@ -80,11 +79,13 @@ fun dropTest g = if isSome (hardDrop g) then gameValue (valOf(hardDrop g)) else 
 (* moveValue (g, l)
 TYPE: gameState * command List -> int
 PRE: true
-POST: dropTest value of g after all commands in l have been executed
+POST: dropTest value of g after all commands in l have been executed, if invalid move occurs then 10000
 *)
 (*VARIANT: length l *)
 fun moveValue (g, []) = dropTest g
-  | moveValue (g, l::ls) = moveValue(valOf (doCommand (g, l)), ls) 			      
+  | moveValue (g, l::ls) = 
+    case doCommand (g, l) of SOME (x) => moveValue(x, ls)
+			  |  NONE  => 10000	
 
 (* spaceRight g
 TYPE: gameState -> int
