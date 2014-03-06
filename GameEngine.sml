@@ -88,7 +88,7 @@ struct
 	|	createBlocks Tetromino_L North   = (~1,0)::(0,0)::(1,0)::(1,~1)::nil
 	|	createBlocks Tetromino_L East    = (0,~1)::(0,0)::(0,1)::(1,1)::nil
 	|	createBlocks Tetromino_L South   = (~1,1)::(~1,0)::(0,0)::(1,0)::nil
-	|	createBlocks Tetromino_L West	 = (1,1)::(0,~1)::(0,0)::(0,1)::nil
+	|	createBlocks Tetromino_L West	 = (~1,~1)::(0,~1)::(0,0)::(0,1)::nil
 
 	|	createBlocks Tetromino_S North 	 = (1,~1)::(0,~1)::(0,0)::(~1,0)::nil
 	| 	createBlocks Tetromino_S East 	 = (~1,~1)::(~1,0)::(0,0)::(0,1)::nil
